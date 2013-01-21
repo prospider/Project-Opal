@@ -12,7 +12,7 @@ namespace Project_Opal
         {
             System.IO.StreamWriter file = new System.IO.StreamWriter("%APPDATA%\\Project Opal\\log.txt", true);
 
-            file.WriteLine(String.Format("{0}:\t{1}", DateTime.Now.ToString(), line);
+            file.WriteLine(String.Format("{0}:\t{1}", DateTime.Now.ToString(), line));
 
             file.Close();
         }
