@@ -48,22 +48,19 @@ namespace Project_Opal
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            SQLiteConnection con = null;
-            SQLiteCommand cmd = null;
+            DatabaseConnection db;
 
             try
             {
-                con = new SQLiteConnection(Database.CONNECTION_STRING);
-                con.Open();
+                db = DatabaseConnection.Open();
 
                 string stm = String.Format("SELECT password FROM T_USER WHERE username = '{0}'", txtUsername.Text);
 
-                cmd = new SQLiteCommand(stm, con);
-                var rows = cmd.ExecuteScalar();
+                var row = db.ExecuteScalar(stm);
 
-                if (rows != null)
+                if (row != null)
                 {
-                    string retrievedPassword = rows.ToString();
+                    string retrievedPassword = row.ToString();
 
                     if (txtPassword.Text.Equals(retrievedPassword))
                     {
@@ -78,14 +75,12 @@ namespace Project_Opal
                 {
                     // USER DOESN'T EXIST
                 }
+
+                db.Close();
             }
             catch (SQLiteException ex)
             {
-                Logger.Write(ex.ToString());
-            }
-            finally
-            {
-                Database.CloseAndDispose(con, cmd);
+                // Handle SQLite errors
             }
         }
     }

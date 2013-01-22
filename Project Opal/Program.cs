@@ -29,19 +29,15 @@ namespace Project_Opal
 
         static void CheckDatabase()
         {
-            SQLiteConnection con = null;
-            SQLiteCommand cmd = null;
+            DatabaseConnection db;
 
             try
             {
-                con = new SQLiteConnection(Database.CONNECTION_STRING);
-                con.Open();
+                db = DatabaseConnection.Open();
 
                 string stm = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'T_SHIFT'";
 
-                cmd = new SQLiteCommand(stm, con);
-
-                var rows = cmd.ExecuteScalar();
+                var rows = db.ExecuteScalar(stm);
 
                 /// <warning>
                 /// If you change these tables structures, BE SURE TO DELETE payroll.db3 IN THE DEBUG FOLDER.
@@ -59,9 +55,7 @@ namespace Project_Opal
                                 end_time DATE
                             );";
 
-                    cmd.Dispose();
-                    cmd = new SQLiteCommand(stm, con);
-                    rows = cmd.ExecuteNonQuery();
+                    rows = db.ExecuteUpdate(stm);
 
                     stm = @"CREATE TABLE T_USER
                             (
@@ -71,37 +65,29 @@ namespace Project_Opal
                                 password TEXT NOT NULL
                             );";    // TODO: password will have to be hashed and stored
 
-                    cmd.Dispose();
-                    cmd = new SQLiteCommand(stm, con);
-                    rows = cmd.ExecuteNonQuery();
+                    rows = db.ExecuteUpdate(stm);
                 }
 
+                db.Close();
                 //TODO: Double check that tables were created
             }
             catch (SQLiteException ex)
             {
-                Logger.Write(ex.ToString());
-            }
-            finally
-            {
-                Database.CloseAndDispose(con, cmd);
+                //TODO: Handle SQLite error
             }
         }
 
         static void SeedDebugDatabase()
         {
-            SQLiteConnection con = null;
-            SQLiteCommand cmd = null;
+            DatabaseConnection db;
 
             try
             {
-                con = new SQLiteConnection(Database.CONNECTION_STRING);
-                con.Open();
+                db = DatabaseConnection.Open();
 
                 string stm = "SELECT * FROM 'T_USER'";
 
-                cmd = new SQLiteCommand(stm, con);
-                var rows = cmd.ExecuteScalar();
+                var rows = db.ExecuteScalar(stm);
 
                 if (rows == null)
                 {
@@ -116,20 +102,16 @@ namespace Project_Opal
                             UNION   SELECT '3' AS 'employee_id', 'tom' AS 'username', 'topaz' AS 'password'
                             ";
 
-                    cmd.Dispose();
-                    cmd = new SQLiteCommand(stm, con);
-                    rows = cmd.ExecuteNonQuery();
+                    rows = db.ExecuteUpdate(stm);
 
                     //TODO: Verify insert succeeded
                 }
+
+                db.Close();
             }
             catch (SQLiteException ex)
             {
-                Logger.Write(ex.ToString());
-            }
-            finally
-            {
-                Database.CloseAndDispose(con, cmd);
+                // TODO: Handle SQLite error
             }
         }
     }
