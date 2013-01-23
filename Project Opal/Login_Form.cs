@@ -61,8 +61,10 @@ namespace Project_Opal
                 if (row != null)
                 {
                     string retrievedPassword = row.ToString();
+                    string inputPassword = txtPassword.Text.ToString();
+                    string hashedInputPassword = Secure.Hash(inputPassword);
 
-                    if (txtPassword.Text.Equals(retrievedPassword))
+                    if (retrievedPassword.Equals(hashedInputPassword))
                     {
                         // ACCESS GRANTED
                     }

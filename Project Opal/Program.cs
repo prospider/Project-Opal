@@ -96,11 +96,11 @@ namespace Project_Opal
                     /// If you don't, you're gonna have a bad time.
                     /// </warning>
 
-                    stm = @"INSERT INTO 'T_USER' ('employee_id', 'username', 'password')
-                                    SELECT '1' AS 'employee_id', 'bob' AS 'username', 'opal' AS 'password'
-                            UNION   SELECT '2' AS 'employee_id', 'mary' AS 'username', 'ruby' AS 'password'
-                            UNION   SELECT '3' AS 'employee_id', 'tom' AS 'username', 'topaz' AS 'password'
-                            ";
+                    stm = String.Format(@"INSERT INTO 'T_USER' ('employee_id', 'username', 'password')
+                                    SELECT '1' AS 'employee_id', 'bob' AS 'username', '{0}' AS 'password'
+                            UNION   SELECT '2' AS 'employee_id', 'mary' AS 'username', '{1}' AS 'password'
+                            UNION   SELECT '3' AS 'employee_id', 'tom' AS 'username', '{2}' AS 'password'
+                            ", Secure.Hash("opal"), Secure.Hash("ruby"), Secure.Hash("topaz"));
 
                     rows = db.ExecuteUpdate(stm);
 
