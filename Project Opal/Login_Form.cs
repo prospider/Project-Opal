@@ -48,41 +48,15 @@ namespace Project_Opal
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            DatabaseConnection db;
+            User currentUser = User.Login(txtUsername.Text.ToString(), txtPassword.Text.ToString());
 
-            try
+            if(currentUser != null)
             {
-                db = DatabaseConnection.Open();
-
-                string stm = String.Format("SELECT password FROM T_USER WHERE username = '{0}'", txtUsername.Text);
-
-                var row = db.ExecuteScalar(stm);
-
-                if (row != null)
-                {
-                    string retrievedPassword = row.ToString();
-                    string inputPassword = txtPassword.Text.ToString();
-                    string hashedInputPassword = Secure.Hash(inputPassword);
-
-                    if (retrievedPassword.Equals(hashedInputPassword))
-                    {
-                        // ACCESS GRANTED
-                    }
-                    else
-                    {
-                        // ACCESS DENIED
-                    }
-                }
-                else
-                {
-                    // USER DOESN'T EXIST
-                }
-
-                db.Close();
+                // GRANTED
             }
-            catch (SQLiteException ex)
+            else
             {
-                // Handle SQLite errors
+                // DENIED
             }
         }
     }

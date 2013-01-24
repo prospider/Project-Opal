@@ -60,10 +60,23 @@ namespace Project_Opal
                     stm = @"CREATE TABLE T_USER
                             (
                                 id INTEGER PRIMARY KEY ASC AUTOINCREMENT,
-                                employee_id INTEGER UNIQUE NOT NULL,
+                                name TEXT NOT NULL,
+                                address TEXT NOT NULL,
+                                sin INTEGER UNIQUE NOT NULL,
+                                bank_account TEXT NOT NULL,
+                                wage REAL NOT NULL
+                            );";
+
+                    rows = db.ExecuteUpdate(stm);
+
+                    stm = @"CREATE TABLE T_CREDENTIALS
+                            (
+                                id INTEGER PRIMARY KEY ASC AUTOINCREMENT,
+                                user_id INTEGER UNIQUE NOT NULL,
                                 username TEXT UNIQUE NOT NULL,
-                                password TEXT NOT NULL
-                            );";    // TODO: password will have to be hashed and stored
+                                password TEXT NOT NULL,
+                                FOREIGN KEY(user_id) REFERENCES T_USER(id)
+                            );";
 
                     rows = db.ExecuteUpdate(stm);
                 }
@@ -73,7 +86,10 @@ namespace Project_Opal
             }
             catch (SQLiteException ex)
             {
-                //TODO: Handle SQLite error
+                Logger.Write(ex.ToString());
+
+                System.Windows.Forms.MessageBox.Show("Database setup failed. SQL error detected & logged.");
+                Environment.Exit(-1);
             }
         }
 
@@ -95,11 +111,22 @@ namespace Project_Opal
                     /// If you change these seed values, BE SURE TO DELETE payroll.db3 IN THE DEBUG FOLDER.
                     /// If you don't, you're gonna have a bad time.
                     /// </warning>
+                    /// 
+                    stm = @"INSERT INTO 'T_USER' ('name', 'address', 'sin', 'bank_account', 'wage')
+                                    SELECT 'Bob Smith' AS 'name', '123 Fake St.' AS 'address', '123456789' AS 'sin', '1-01' AS 'bank_account',
+                                        '12.00' AS 'wage'
+                            UNION   SELECT 'Mary Jones' AS 'name', '345 Carnival Rd.' AS 'address', '987654321' AS 'sin', '1-02' AS 'bank_account',
+                                        '14.00' AS 'wage'
+                            UNION   SELECT 'Tom Hardy' AS 'name', '909 Batman Pl.' AS 'address', '555666777' AS 'sin', '1-03' AS 'bank_account',
+                                        '5667.00' AS 'wage'
+                            ";
 
-                    stm = String.Format(@"INSERT INTO 'T_USER' ('employee_id', 'username', 'password')
-                                    SELECT '1' AS 'employee_id', 'bob' AS 'username', '{0}' AS 'password'
-                            UNION   SELECT '2' AS 'employee_id', 'mary' AS 'username', '{1}' AS 'password'
-                            UNION   SELECT '3' AS 'employee_id', 'tom' AS 'username', '{2}' AS 'password'
+                    rows = db.ExecuteUpdate(stm);
+
+                    stm = String.Format(@"INSERT INTO 'T_CREDENTIALS' ('user_id', 'username', 'password')
+                                    SELECT '0' AS 'user_id', 'bob' AS 'username', '{0}' AS 'password'
+                            UNION   SELECT '1' AS 'user_id', 'mary' AS 'username', '{1}' AS 'password'
+                            UNION   SELECT '2' AS 'user_id', 'tom' AS 'username', '{2}' AS 'password'
                             ", Secure.Hash("opal"), Secure.Hash("ruby"), Secure.Hash("topaz"));
 
                     rows = db.ExecuteUpdate(stm);
@@ -111,7 +138,10 @@ namespace Project_Opal
             }
             catch (SQLiteException ex)
             {
-                // TODO: Handle SQLite error
+                Logger.Write(ex.ToString());
+
+                System.Windows.Forms.MessageBox.Show("Database seeding failed. SQL error detected & logged.");
+                Environment.Exit(-1);
             }
         }
     }
