@@ -84,7 +84,7 @@
         }
 
         #endregion
-
+        private Logger log;
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnLogin;

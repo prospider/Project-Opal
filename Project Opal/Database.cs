@@ -7,28 +7,37 @@ using System.Data.SQLite;
 
 namespace Project_Opal
 {
-    class DatabaseConnection
+    public class DatabaseConnection
     {
 
         public static readonly string CONNECTION_STRING = "Data Source=payroll.db3";
         SQLiteConnection con = null;
         SQLiteCommand cmd = null;
+        private Logger log;
+        private string conString;
+        private string logFile;
 
 
-        public static DatabaseConnection Open(string conString = "Data Source=payroll.db3")
+        public DatabaseConnection(string logFile, string conString = "Data Source=payroll.db3")
         {
-            DatabaseConnection ret = new DatabaseConnection();
+            this.conString = conString;
+            this.log = new Logger(logFile);
+        }
 
+        public void Open()
+        {
+         
+            
             try
             {
-                ret.con = new SQLiteConnection(conString);
-                ret.con.Open();
-
-                return ret;
+                this.con = new SQLiteConnection(this.conString);
+                this.con.Open();
+                log.Write(String.Format("Connection opened to: {0}", conString));
+                //return ret; //shouldnt have to return anything...
             }
             catch (SQLiteException ex)
             {
-                Logger.Write(String.Format("SQLite connection failed: {0}", ex));
+                log.Write(String.Format("SQLite connection failed: {0}", ex),1);
 
                 throw ex;
             }
@@ -39,6 +48,7 @@ namespace Project_Opal
             if (con != null && con.State == System.Data.ConnectionState.Open)
             {
                 con.Close();
+                log.Write(String.Format("Closed connection to Database {0}", this.conString));
             }
         }
 
@@ -53,12 +63,12 @@ namespace Project_Opal
             {
                 cmd = new SQLiteCommand(sqlString, con);
                 affectedRows = cmd.ExecuteNonQuery();
-
+                log.Write(String.Format("Executed Update: {0}\nRows Affected: {1}", sqlString, affectedRows));
                 return affectedRows;
             }
             catch (SQLiteException e)
             {
-                Logger.Write(String.Format("SQLite Update/Insert/Delete failed: {0}", e));
+                log.Write(String.Format("SQLite Update/Insert/Delete failed: {0}\nFailure caused by: {1}", e, sqlString),1);
                 throw e;
             }
         }
@@ -74,18 +84,19 @@ namespace Project_Opal
             {
                 cmd = new SQLiteCommand(sqlString, con);
                 resultSet = cmd.ExecuteReader();
-
+                log.Write(String.Format("Select Executed Successfully: {0}", sqlString));
                 return resultSet;
             }
             catch(SQLiteException e)
             {
 
-                Logger.Write(String.Format("SQLite Select failed: {0} ", e));
+                log.Write(String.Format("SQLite Select failed: {0}\nFailure caused by: {1} ", e, sqlString),1);
                 throw e;
             }
         }
 
         //FOR SELECT STATEMENTS ONLY. Returns first row of first column of result.
+        //This means it is essentially an existence check for the DB?
         public object ExecuteScalar(string sqlString)
         {
             object result;
@@ -96,13 +107,13 @@ namespace Project_Opal
             {
                 cmd = new SQLiteCommand(sqlString, con);
                 result = cmd.ExecuteScalar();
-
+                log.Write(String.Format("Scalar Executed Successfully: {0}", sqlString));
                 return result;
             }
             catch (SQLiteException e)
             {
 
-                Logger.Write(String.Format("SQLite Select failed: {0} ", e));
+                log.Write(String.Format("SQLite Select failed: {0} ", e),1);
                 throw e;
             }
         }
@@ -118,13 +129,31 @@ namespace Project_Opal
         // Destructor is called when GC wants to get rid of object
         ~DatabaseConnection()
         {
-            if(con != null)
+            try
             {
+
                 con.Dispose();
+
+                if (con != null)
+                {
+                    if (con.State == System.Data.ConnectionState.Open)
+                    {
+                        con.Close();
+                        log.Write("Connection to Database closed.");
+                    }
+
+                    con.Dispose();
+                }
+            }
+            catch (Exception e)//temp exception so program stops yelling at me. 
+            {
+                ;
+
             }
 
             if (cmd != null)
             {
+                log.Write(string.Format("command disposed of: {0}", cmd));
                 cmd.Dispose();
             }
         }

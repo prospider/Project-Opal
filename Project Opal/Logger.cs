@@ -7,15 +7,67 @@ using System.IO;
 
 namespace Project_Opal
 {
-    class Logger
+    public class Logger
     {
-        public static void Write(string line)
+        static string[] severityList = { "INFO", "ERROR", "CRITICAL" };
+        StreamWriter file;
+        string logFileString;
+        static StreamWriter runFile;
+        static string runLogString = "runLog.txt";
+        static bool runInit = true;
+        public Logger(string logFileString)
         {
-            StreamWriter file = new StreamWriter("log.txt", true);
+            this.logFileString = logFileString;
+            StartRun();
+        }
 
-            file.WriteLine(String.Format("{0}:\t{1}", DateTime.Now.ToString(), line));
 
+
+        ~Logger()
+        {
+            try
+            {
+                ;//file.Close();
+            }
+            catch (Exception e)
+            {
+                ;
+            }
+
+        }
+
+
+        public void Write(string line, int severity = 0)
+        {
+            try
+            {
+                file = new StreamWriter(this.logFileString, true);
+                runFile = new StreamWriter(runLogString, true);
+                runFile.WriteLine(String.Format("{0}:\t{1} -> {2}", DateTime.Now.ToString(), severityList[severity], line));
+                file.WriteLine(String.Format("{0}:\t{1} -> {2}", DateTime.Now.ToString(), severityList[severity], line));
+                file.Close();
+                runFile.Close();
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+        }
+
+        public void StartRun()
+        {
+            file = new StreamWriter(this.logFileString, true);
+            file.WriteLine("------------------NEW RUN---------------------");
             file.Close();
+
+            if (runInit)
+            {
+                runFile = new StreamWriter(runLogString, true);
+                runFile.WriteLine("------------------NEW RUN---------------------");
+                runFile.Close();
+                runInit = false;
+            }
         }
     }
 }

@@ -17,14 +17,22 @@ namespace Project_Opal
         // DEBUG MODE
         public static readonly bool DEBUG_MODE = true;
 
+        private static Logger log;
         [STAThread]
         static void Main()
         {
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            initLogger();
             CheckDatabase();
             if (DEBUG_MODE) { SeedDebugDatabase(); }
             Application.Run(new Login_Form());
+        }
+
+        static void initLogger()
+        {
+            log = new Logger("ProgramLog.txt");
         }
 
         static void CheckDatabase()
@@ -33,10 +41,11 @@ namespace Project_Opal
 
             try
             {
-                db = DatabaseConnection.Open();
+                db = new DatabaseConnection("ProgramLog.txt");//added this line to test logger. 
+                db.Open(); //this is all fuckulated. Is the Open method acting as a constructor here?!
 
                 string stm = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'T_SHIFT'";
-
+                log.Write(String.Format("Executed Query: {0}", stm));
                 var rows = db.ExecuteScalar(stm);
 
                 /// <warning>
@@ -46,6 +55,7 @@ namespace Project_Opal
 
                 if (rows == null) // No rows found, database is empty
                 {
+                    log.Write("Uh oh, we didnt find any info in the database! Recreating Database.");
                     stm = @"CREATE TABLE T_SHIFT
                             (
                                 id INTEGER PRIMARY KEY ASC AUTOINCREMENT,
@@ -99,10 +109,12 @@ namespace Project_Opal
 
             try
             {
-                db = DatabaseConnection.Open();
+                log.Write("Seeding Data into new database");
+                db = new DatabaseConnection("ProgramDBAccessLog.txt");
+                db.Open();
 
                 string stm = "SELECT * FROM 'T_USER'";
-
+                log.Write(string.Format("Executing SQL: {0}", stm));
                 var rows = db.ExecuteScalar(stm);
 
                 if (rows == null)
