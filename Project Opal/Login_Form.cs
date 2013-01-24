@@ -57,7 +57,7 @@ namespace Project_Opal
             {
 
                 // GRANTED
-
+                DatabaseConnection db;
                 db = new DatabaseConnection("Loginlog.txt");
                 db.Open(); //modded this until i get clarification on the purpose of Open().
 

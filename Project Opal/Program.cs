@@ -96,7 +96,7 @@ namespace Project_Opal
             }
             catch (SQLiteException ex)
             {
-                Logger.Write(ex.ToString());
+                log.Write(ex.ToString());
 
                 System.Windows.Forms.MessageBox.Show("Database setup failed. SQL error detected & logged.");
                 Environment.Exit(-1);
@@ -150,7 +150,7 @@ namespace Project_Opal
             }
             catch (SQLiteException ex)
             {
-                Logger.Write(ex.ToString());
+                log.Write(ex.ToString());
 
                 System.Windows.Forms.MessageBox.Show("Database seeding failed. SQL error detected & logged.");
                 Environment.Exit(-1);

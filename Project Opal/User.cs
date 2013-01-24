@@ -19,8 +19,8 @@ namespace Project_Opal
         {
             // Pass password as plaintext
             DatabaseConnection db;
-
-            db = DatabaseConnection.Open();
+            db = new DatabaseConnection("UserLog.txt");
+            db.Open();
 
             string stm = String.Format("SELECT password FROM T_CREDENTIALS WHERE username = '{0}'", username);
 
