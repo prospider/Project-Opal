@@ -120,11 +120,6 @@ namespace Project_Opal
         {
             if(con != null)
             {
-                if (con.State == System.Data.ConnectionState.Open)
-                {
-                    con.Close();
-                }
-
                 con.Dispose();
             }
 
