@@ -14,12 +14,15 @@ namespace Project_Opal
         public int sin;
         public string bankAcctNumber;
         public double wage;
+        private static Logger log;
 
         public static User Login(string username, string password)
         {
             // Pass password as plaintext
             DatabaseConnection db;
             db = new DatabaseConnection("UserLog.txt");
+            log = new Logger("UserLog.txt");
+
             db.Open();
 
             string stm = String.Format("SELECT password FROM T_CREDENTIALS WHERE username = '{0}'", username);
@@ -30,10 +33,11 @@ namespace Project_Opal
             {
                 string retrievedPassword = row.ToString();
                 string hashedInputPassword = Secure.Hash(password);
-
+                log.Write(string.Format("Testing inputted hash: {0}", hashedInputPassword.ToString() ));
                 if (retrievedPassword.Equals(hashedInputPassword))
                 {
                     // Access granted
+                    log.Write("Access granted!");
                     SQLiteDataReader userInformationReader;
 
                     stm = String.Format(@"SELECT T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage, T_CREDENTIALS.username 
@@ -58,6 +62,7 @@ namespace Project_Opal
                 else
                 {
                     // Access denied
+                    log.Write("Access Denied!");
                     db.Close();
                     return null;
                 }
@@ -65,6 +70,7 @@ namespace Project_Opal
             else
             {
                 // User doesn't exist
+                log.Write("User doesnt exist!");
                 db.Close();
                 return null;
             }
