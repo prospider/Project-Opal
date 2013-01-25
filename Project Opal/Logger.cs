@@ -9,31 +9,22 @@ namespace Project_Opal
 {
     public class Logger
     {
+        // Other methods can write using these severity levels rather than array indices
+        public static readonly int INFO = 0;
+        public static readonly int ERROR = 0;
+        public static readonly int CRITICAL = 0;
+
         static string[] severityList = { "INFO", "ERROR", "CRITICAL" };
         StreamWriter file;
         string logFileString;
         static StreamWriter runFile;
         static string runLogString = "runLog.txt";
         static bool runInit = true;
+
         public Logger(string logFileString)
         {
             this.logFileString = logFileString;
             StartRun();
-        }
-
-
-
-        ~Logger()
-        {
-            try
-            {
-                ;//file.Close();
-            }
-            catch (Exception e)
-            {
-                ;
-            }
-
         }
 
 

@@ -41,8 +41,8 @@ namespace Project_Opal
 
             try
             {
-                db = new DatabaseConnection("ProgramLog.txt");//added this line to test logger. 
-                db.Open(); //this is all fuckulated. Is the Open method acting as a constructor here?!
+                db = new DatabaseConnection("ProgramLog.txt");
+                db.Open();
 
                 string stm = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'T_SHIFT'";
                 log.Write(String.Format("Executed Query: {0}", stm));
@@ -136,9 +136,9 @@ namespace Project_Opal
                     rows = db.ExecuteUpdate(stm);
 
                     stm = String.Format(@"INSERT INTO 'T_CREDENTIALS' ('user_id', 'username', 'password')
-                                    SELECT '0' AS 'user_id', 'bob' AS 'username', '{0}' AS 'password'
-                            UNION   SELECT '1' AS 'user_id', 'mary' AS 'username', '{1}' AS 'password'
-                            UNION   SELECT '2' AS 'user_id', 'tom' AS 'username', '{2}' AS 'password'
+                                    SELECT '1' AS 'user_id', 'bob' AS 'username', '{0}' AS 'password'
+                            UNION   SELECT '2' AS 'user_id', 'mary' AS 'username', '{1}' AS 'password'
+                            UNION   SELECT '3' AS 'user_id', 'tom' AS 'username', '{2}' AS 'password'
                             ", Secure.Hash("opal"), Secure.Hash("ruby"), Secure.Hash("topaz"));
 
                     rows = db.ExecuteUpdate(stm);

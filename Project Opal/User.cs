@@ -40,14 +40,14 @@ namespace Project_Opal
                     log.Write("Access granted!");
                     SQLiteDataReader userInformationReader;
 
-                    stm = String.Format(@"SELECT T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage, T_CREDENTIALS.username 
+                    stm = String.Format(@"SELECT T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage
                                         FROM T_USER
                                         INNER JOIN T_CREDENTIALS
-                                        ON T_CREDENTIALS.user_id = T_USER.id
+                                        ON T_USER.id = T_CREDENTIALS.user_id
                                         WHERE T_CREDENTIALS.username = '{0}'", username);
 
                     userInformationReader = db.ExecuteSelect(stm);
-                    bool test = userInformationReader.HasRows;
+                    userInformationReader.Read();
 
                     User ret = new User(userInformationReader.GetString(0),
                         userInformationReader.GetString(1),

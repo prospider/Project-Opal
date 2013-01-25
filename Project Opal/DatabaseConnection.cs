@@ -96,7 +96,6 @@ namespace Project_Opal
         }
 
         //FOR SELECT STATEMENTS ONLY. Returns first row of first column of result.
-        //This means it is essentially an existence check for the DB?
         public object ExecuteScalar(string sqlString)
         {
             object result;
