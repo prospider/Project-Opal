@@ -41,7 +41,7 @@ namespace Project_Opal
             }
             catch (Exception e)
             {
-                
+                // Why is this breaking?
             }
 
         }

@@ -25,7 +25,6 @@ namespace Project_Opal
             {
                 txtUsername.ForeColor = Color.Black;
                 txtUsername.Text = "";
-                log.Write("User Clicked on Username Field.");
             }
         }
 
@@ -35,7 +34,7 @@ namespace Project_Opal
             {
                 txtPassword.ForeColor = Color.Black;
                 txtPassword.Text = "";
-                log.Write("User Clicked on Password Field.");
+                txtPassword.UseSystemPasswordChar = true;
             }
         }
 
@@ -47,6 +46,7 @@ namespace Project_Opal
         private void txtPassword_TextChanged(object sender, EventArgs e)
         {
             if (txtPassword.ForeColor != Color.Black) { txtPassword.ForeColor = Color.Black; }
+            txtPassword.UseSystemPasswordChar = true;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -60,7 +60,8 @@ namespace Project_Opal
             }
             else
             {
-                // DENIED
+                MessageBox.Show("Oops! We didn't recognize that username/password. Please try again.");
+                txtPassword.Text = "";
             }
         }
     }

@@ -14,6 +14,8 @@ namespace Project_Opal
         public int sin;
         public string bankAcctNumber;
         public double wage;
+
+        private static readonly string LOG_FILE = "login_log.txt";
         private static Logger log;
 
         public static User Login(string username, string password)
@@ -21,7 +23,7 @@ namespace Project_Opal
             // Pass password as plaintext
             DatabaseConnection db;
             db = new DatabaseConnection("UserLog.txt");
-            log = new Logger("UserLog.txt");
+            log = new Logger(LOG_FILE);
 
             db.Open();
 
@@ -33,11 +35,9 @@ namespace Project_Opal
             {
                 string retrievedPassword = row.ToString();
                 string hashedInputPassword = Secure.Hash(password);
-                log.Write(string.Format("Testing inputted hash: {0}", hashedInputPassword.ToString() ));
                 if (retrievedPassword.Equals(hashedInputPassword))
                 {
                     // Access granted
-                    log.Write("Access granted!");
                     SQLiteDataReader userInformationReader;
 
                     stm = String.Format(@"SELECT T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage
@@ -62,7 +62,7 @@ namespace Project_Opal
                 else
                 {
                     // Access denied
-                    log.Write("Access Denied!");
+                    log.Write(String.Format("{0} failed login request with password: {1}", username.ToUpper(), password));
                     db.Close();
                     return null;
                 }
@@ -70,19 +70,21 @@ namespace Project_Opal
             else
             {
                 // User doesn't exist
-                log.Write("User doesnt exist!");
+                log.Write(String.Format("{0} attempted login, but user does not exist", username.ToUpper()));
                 db.Close();
                 return null;
             }
         }
 
-        public User(string i_name, string i_address, int i_sin, string i_bankAcctNumber, double i_wage)
+        private User(string i_name, string i_address, int i_sin, string i_bankAcctNumber, double i_wage)
         {
             name = i_name;
             address = i_address;
             sin = i_sin;
             bankAcctNumber = i_bankAcctNumber;
             wage = i_wage;
+
+            log.Write(String.Format("{0} has logged in", name.ToUpper()));
         }
     }
 }
