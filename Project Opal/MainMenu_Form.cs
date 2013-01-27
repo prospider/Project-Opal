@@ -14,10 +14,10 @@ namespace Project_Opal
     {
         private User currentUser;
 
-        public MainMenu_Form(User u)
+        public MainMenu_Form()
         {
             InitializeComponent();
-            currentUser = u;
+            //currentUser = u;
         }
     }
 }
