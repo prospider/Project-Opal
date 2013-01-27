@@ -11,8 +11,8 @@ namespace Project_Opal
     {
         // Other methods can write using these severity levels rather than array indices
         public static readonly int INFO = 0;
-        public static readonly int ERROR = 0;
-        public static readonly int CRITICAL = 0;
+        public static readonly int ERROR = 1;
+        public static readonly int CRITICAL = 2;
 
         static string[] severityList = { "INFO", "ERROR", "CRITICAL" };
         StreamWriter file;
