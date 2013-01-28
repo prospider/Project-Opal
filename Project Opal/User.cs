@@ -15,7 +15,7 @@ namespace Project_Opal
         public string bankAcctNumber;
         public double wage;
 
-        private static readonly string LOG_FILE = "login_log.txt";
+        private static readonly string LOG_FILE = "loginLog.txt";
         private static Logger log;
 
         public static User Login(string username, string password)
@@ -84,7 +84,7 @@ namespace Project_Opal
             bankAcctNumber = i_bankAcctNumber;
             wage = i_wage;
 
-            log.Write(String.Format("{0} has logged in", name.ToUpper()));
+            log.Write(String.Format("{0} has logged in successfully.", name.ToUpper()));
         }
     }
 }

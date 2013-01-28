@@ -19,12 +19,17 @@ namespace Project_Opal
         string logFileString;
         static StreamWriter runFile;
         static string runLogString = "runLog.txt";
-        static bool runInit = true;
+        static private bool initStatus = true;
 
         public Logger(string logFileString)
         {
             this.logFileString = logFileString;
-            StartRun();
+            if (initStatus)
+            {
+                runInit();
+                initStatus = false;
+            }
+          
         }
 
 
@@ -41,24 +46,18 @@ namespace Project_Opal
             }
             catch (Exception e)
             {
-                // Why is this breaking?
+                Console.WriteLine(String.Format("Something serious happened to Logger. Error: {0}", e.ToString()));
             }
 
         }
 
-        public void StartRun()
+        private void runInit()
         {
-            file = new StreamWriter(this.logFileString, true);
-            file.WriteLine("------------------NEW RUN---------------------");
-            file.Close();
-
-            if (runInit)
-            {
-                runFile = new StreamWriter(runLogString, true);
-                runFile.WriteLine("------------------NEW RUN---------------------");
-                runFile.Close();
-                runInit = false;
-            }
+            runFile = new StreamWriter(runLogString, true);
+            runFile.WriteLine("\n----------------NEW RUN------------NEW RUN -----------NEW RUN------------NEW RUN----------------NEW RUN------------------NEW RUN--------------------NEW RUN--------------\n");
+            runFile.Close();
         }
+
+
     }
 }

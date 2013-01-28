@@ -15,13 +15,13 @@ namespace Project_Opal
         SQLiteCommand cmd = null;
         private Logger log;
         private string conString;
-        private string logFile;
+        
 
 
         public DatabaseConnection(string logFile, string conString = "Data Source=payroll.db3")
         {
             this.conString = conString;
-            this.log = new Logger(logFile);
+            this.log = new Logger(logFile); //this allows the database module to write to the parent's logfile so we can see which parts of the program are running which SQL.
         }
 
         public void Open()
@@ -144,10 +144,9 @@ namespace Project_Opal
                     con.Dispose();
                 }
             }
-            catch (Exception e)//temp exception so program stops yelling at me. 
+            catch (Exception e)
             {
-                ;
-
+                log.Write(String.Format("Could not close and dispose DB Connection: {0}" , e.ToString()), 1);
             }
 
             if (cmd != null)

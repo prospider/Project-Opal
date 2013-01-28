@@ -96,7 +96,7 @@ namespace Project_Opal
             }
             catch (SQLiteException ex)
             {
-                log.Write(ex.ToString());
+                log.Write(String.Format("Problem communicating with the database, or file already exists. Error info: {0}",ex.ToString()),Logger.CRITICAL);
 
                 System.Windows.Forms.MessageBox.Show("Database setup failed. SQL error detected & logged.");
                 Environment.Exit(-1);
@@ -110,7 +110,7 @@ namespace Project_Opal
             try
             {
                 log.Write("Seeding Data into new database");
-                db = new DatabaseConnection("ProgramDBAccessLog.txt");
+                db = new DatabaseConnection("ProgramLog.txt");
                 db.Open();
 
                 string stm = "SELECT * FROM 'T_USER'";

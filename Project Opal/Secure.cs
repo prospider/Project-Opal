@@ -9,12 +9,13 @@ namespace Project_Opal
 {
     class Secure
     {
+        private static SHA512CryptoServiceProvider cryptoProvider = new SHA512CryptoServiceProvider();
 
         public static string Hash(string unsecure)
         {
             // MD5 nor SHA1 is secure; SHA512 is reasonably secure apparently
             //works for me. 
-            SHA512CryptoServiceProvider cryptoProvider = new SHA512CryptoServiceProvider();
+            
 
             byte[] data = Encoding.ASCII.GetBytes(unsecure);
             data = cryptoProvider.ComputeHash(data);
