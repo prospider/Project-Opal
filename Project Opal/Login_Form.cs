@@ -55,8 +55,8 @@ namespace Project_Opal
 
             if(currentUser != null)
             {
-
-                // GRANTED
+                Program.currentUser = currentUser;
+                this.DialogResult = DialogResult.OK;
             }
             else
             {

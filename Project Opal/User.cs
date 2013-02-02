@@ -7,8 +7,9 @@ using System.Data.SQLite;
 
 namespace Project_Opal
 {
-    class User
+    public class User
     {
+        public int id;
         public string name;
         public string address;
         public int sin;
@@ -40,7 +41,7 @@ namespace Project_Opal
                     // Access granted
                     SQLiteDataReader userInformationReader;
 
-                    stm = String.Format(@"SELECT T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage
+                    stm = String.Format(@"SELECT T_USER.id, T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage
                                         FROM T_USER
                                         INNER JOIN T_CREDENTIALS
                                         ON T_USER.id = T_CREDENTIALS.user_id
@@ -49,11 +50,12 @@ namespace Project_Opal
                     userInformationReader = db.ExecuteSelect(stm);
                     userInformationReader.Read();
 
-                    User ret = new User(userInformationReader.GetString(0),
+                    User ret = new User(userInformationReader.GetInt32(0),
                         userInformationReader.GetString(1),
-                        userInformationReader.GetInt32(2),
-                        userInformationReader.GetString(3),
-                        userInformationReader.GetDouble(4));
+                        userInformationReader.GetString(2),
+                        userInformationReader.GetInt32(3),
+                        userInformationReader.GetString(4),
+                        userInformationReader.GetDouble(5));
 
                     db.Close();
 
@@ -76,8 +78,9 @@ namespace Project_Opal
             }
         }
 
-        private User(string i_name, string i_address, int i_sin, string i_bankAcctNumber, double i_wage)
+        private User(int i_id, string i_name, string i_address, int i_sin, string i_bankAcctNumber, double i_wage)
         {
+            id = i_id;
             name = i_name;
             address = i_address;
             sin = i_sin;

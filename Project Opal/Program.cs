@@ -18,6 +18,8 @@ namespace Project_Opal
         public static readonly bool DEBUG_MODE = true;
 
         private static Logger log;
+        public static User currentUser;
+
         [STAThread]
         static void Main()
         {
@@ -27,7 +29,17 @@ namespace Project_Opal
             initLogger();
             CheckDatabase();
             if (DEBUG_MODE) { SeedDebugDatabase(); }
-            Application.Run(new Login_Form());
+
+            Login_Form loginForm = new Login_Form();
+
+            if (loginForm.ShowDialog() == DialogResult.OK)
+            {
+                Application.Run(new MainMenu_Form(currentUser));
+            }
+            else
+            {
+                Application.Exit();
+            }
         }
 
         static void initLogger()
@@ -62,7 +74,8 @@ namespace Project_Opal
                                 employee_id INTEGER,
                                 vehicle_number INTEGER NOT NULL,
                                 start_time DATE NOT NULL,
-                                end_time DATE
+                                end_time DATE,
+                                FOREIGN KEY(id) REFERENCES T_USER(id)
                             );";
 
                     rows = db.ExecuteUpdate(stm);
@@ -143,7 +156,18 @@ namespace Project_Opal
 
                     rows = db.ExecuteUpdate(stm);
 
+                    stm = @"INSERT INTO 'T_SHIFT' ('employee_id', 'vehicle_number', 'start_time', 'end_time')
+                                    SELECT '1' AS 'employee_id', '10' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' as 'end_time'
+                            UNION   SELECT '3' AS 'employee_id', '13' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' as 'end_time'";
                     //TODO: Verify insert succeeded
+
+                    rows = db.ExecuteUpdate(stm);
+
+                    stm = @"INSERT INTO 'T_SHIFT' ('employee_id', 'vehicle_number', 'start_time')
+                                    SELECT '2' AS 'employee_id', '11' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time'
+                            UNION   SELECT '3' AS 'employee_id', '13' AS 'vehicle_number', '2013-01-02 09:00' AS 'start_time'";
+
+                    rows = db.ExecuteUpdate(stm);
                 }
 
                 db.Close();

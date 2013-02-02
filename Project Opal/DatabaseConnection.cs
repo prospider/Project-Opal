@@ -11,6 +11,8 @@ namespace Project_Opal
     {
 
         public static readonly string CONNECTION_STRING = "Data Source=payroll.db3";
+        public static readonly string DATABASE_LOG = "Database_Log.txt";
+
         SQLiteConnection con = null;
         SQLiteCommand cmd = null;
         private Logger log;
@@ -26,8 +28,6 @@ namespace Project_Opal
 
         public void Open()
         {
-         
-            
             try
             {
                 this.con = new SQLiteConnection(this.conString);
@@ -111,8 +111,13 @@ namespace Project_Opal
             }
             catch (SQLiteException e)
             {
-
-                log.Write(String.Format("SQLite Select failed: {0} ", e),1);
+                log.Write(String.Format("SQLite Select failed: {0} ", e), 1);
+                throw e;
+            }
+            catch (InvalidOperationException e)
+            {
+                System.Windows.Forms.MessageBox.Show(String.Format("Your SQL statement was incorrect. SQL: {0}",
+                    sqlString));
                 throw e;
             }
         }

@@ -14,10 +14,35 @@ namespace Project_Opal
     {
         private User currentUser;
 
-        public MainMenu_Form()
+        public MainMenu_Form(User u)
         {
             InitializeComponent();
-            //currentUser = u;
+            currentUser = u;
+            InitializeFormElements();
+        }
+
+        private void InitializeFormElements()
+        {
+            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
+            con.Open();
+
+            var openShiftStartDate = con.ExecuteScalar(String.Format("SELECT MAX(start_time) FROM 'T_SHIFT' WHERE employee_id = {0} AND end_time IS NULL",
+                currentUser.id.ToString()));
+
+            if (openShiftStartDate != null)
+            {
+                lblShiftInformation.Text = String.Format("You have an open shift started at: {0}", openShiftStartDate.ToString());
+                btnClock.Text = "Clock out";
+                //TODO: Change button click handler for clocking out
+            }
+            else
+            {
+                lblShiftInformation.Text = "";
+                btnClock.Text = "Clock in";
+                //TODO: Change button click handler for clocking in
+            }
+
+            con.Close();
         }
     }
 }
