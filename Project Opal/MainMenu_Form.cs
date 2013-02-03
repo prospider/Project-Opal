@@ -13,6 +13,7 @@ namespace Project_Opal
     public partial class MainMenu_Form : Form
     {
         private User currentUser;
+        private Shift currentShift;
 
         public MainMenu_Form(User u)
         {
@@ -33,13 +34,13 @@ namespace Project_Opal
             {
                 lblShiftInformation.Text = String.Format("You have an open shift started at: {0}", openShiftStartDate.ToString());
                 btnClock.Text = "Clock out";
-                //TODO: Change button click handler for clocking out
+                //btnClock.Click += currentShift.ClockOut();
             }
             else
             {
                 lblShiftInformation.Text = "";
                 btnClock.Text = "Clock in";
-                //TODO: Change button click handler for clocking in
+                //btnClock.Click += Shift.ClockIn(currentUser.id, 1);
             }
 
             con.Close();
