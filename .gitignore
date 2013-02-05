@@ -27,3 +27,11 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.vssscc
 $tf*/
+
+/__pycache__/
+/__pycache__
+/.idea/
+/.idea
+
+#python specific
+*.pyc
