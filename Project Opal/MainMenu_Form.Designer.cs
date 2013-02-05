@@ -41,6 +41,7 @@
             this.btnClock.TabIndex = 0;
             this.btnClock.Text = "btnClock";
             this.btnClock.UseVisualStyleBackColor = true;
+            this.btnClock.Click += new System.EventHandler(this.btnClock_Click);
             // 
             // btnReview
             // 

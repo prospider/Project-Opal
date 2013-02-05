@@ -14,36 +14,52 @@ namespace Project_Opal
     {
         private User currentUser;
         private Shift currentShift;
+        private bool shiftOpened;
 
         public MainMenu_Form(User u)
         {
             InitializeComponent();
             currentUser = u;
+            currentShift = u.GetOpenShift();
             InitializeFormElements();
         }
 
         private void InitializeFormElements()
         {
-            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
-            con.Open();
-
-            var openShiftStartDate = con.ExecuteScalar(String.Format("SELECT MAX(start_time) FROM 'T_SHIFT' WHERE employee_id = {0} AND end_time IS NULL",
-                currentUser.id.ToString()));
-
-            if (openShiftStartDate != null)
+            if (currentShift != null)
             {
-                lblShiftInformation.Text = String.Format("You have an open shift started at: {0}", openShiftStartDate.ToString());
-                btnClock.Text = "Clock out";
-                //btnClock.Click += currentShift.ClockOut();
+                btnClockToClockOut();
             }
             else
             {
-                lblShiftInformation.Text = "";
-                btnClock.Text = "Clock in";
-                //btnClock.Click += Shift.ClockIn(currentUser.id, 1);
+                btnClockToClockIn();            
             }
+        }
 
-            con.Close();
+        private void btnClockToClockOut()
+        {
+            btnClock.Text = "Clock out";
+            lblShiftInformation.Text = String.Format("You have an open shift started at: {0}", currentShift.startTime.ToString());
+        }
+
+        private void btnClockToClockIn()
+        {
+            btnClock.Text = "Clock in";
+            lblShiftInformation.Text = "";
+        }
+        
+        private void btnClock_Click(object sender, EventArgs e)
+        {
+            if (currentShift != null)
+            {
+                currentUser.ClockOut(currentShift);
+                btnClockToClockIn();
+            }
+            else
+            {
+                currentShift = currentUser.ClockIn(1); //TODO: Get input for vehicle number
+                btnClockToClockOut();
+            }
         }
     }
 }

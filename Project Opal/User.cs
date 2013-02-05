@@ -89,5 +89,69 @@ namespace Project_Opal
 
             log.Write(String.Format("{0} has logged in successfully.", name.ToUpper()));
         }
+
+        public Shift GetOpenShift()
+        {
+            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
+            con.Open();
+
+            SQLiteDataReader latestOpenShift = con.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time
+                                                                        FROM T_SHIFT 
+                                                                        WHERE employee_id = {0}
+                                                                        AND end_time IS NULL", id.ToString()));
+
+            if (latestOpenShift.HasRows)
+            {
+                latestOpenShift.Read();
+
+                Shift shf = new Shift(latestOpenShift.GetInt32(0),
+                    latestOpenShift.GetInt32(1),
+                    latestOpenShift.GetInt32(2),
+                    latestOpenShift.GetDateTime(3));
+
+                con.Close();
+
+                return shf;
+            }
+            else
+            {
+                con.Close();
+
+                return null;
+            }
+        }
+
+        public Shift ClockIn(int vehicleNum)
+        {
+            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
+            con.Open();
+
+            string stm = String.Format(@"INSERT employee_id, vehicle_number, start_time INTO T_SHIFT VALUES ('{0}', '{1}', date('now'))",
+                id.ToString(), vehicleNum.ToString());
+
+            con.ExecuteUpdate(stm);
+
+            stm = "SELECT id, MAX(start_date) FROM T_SHIFT WHERE employee_id = '{0}' AND end_time IS NULL";
+
+            var newRowId = con.ExecuteScalar(stm);
+
+            Shift ret = new Shift(Convert.ToInt32(newRowId), id, vehicleNum, DateTime.Now);
+
+            return ret;
+        }
+
+        public void ClockOut(Shift s)
+        {
+            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
+            con.Open();
+
+            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = date('now') WHERE id = {0}'", id.ToString());
+
+            con.ExecuteUpdate(stm);
+
+            con.Close();
+
+            s.endTime = DateTime.Now;
+        }
     }
 }
