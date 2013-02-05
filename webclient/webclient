@@ -1,0 +1,34 @@
+from bottle import *
+from bottle_sqlite import *
+from hashlib import *
+
+
+@route('/hello')
+def hello():
+    return "Hello World!"
+
+@route('/')
+def loginForm():
+    return '''<form method="POST" action="/login">
+                <input name="name"     type="text" />
+                <input name="password" type="password" />
+                <input type="submit" />
+              </form>'''
+
+
+@post('/login')
+def login_submit():
+    name     = request.forms.get('name')
+    password = request.forms.get('password')
+    if check_login(name, password):
+        return "<p>Your login was correct</p>"
+    else:
+        return "<p>Login failed</p>"
+
+
+
+def check_login(name, password):
+    return True
+
+run(host='localhost', port=8080, debug=True)
+
