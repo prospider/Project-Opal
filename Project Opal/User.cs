@@ -127,7 +127,9 @@ namespace Project_Opal
             con.Open();
 
             string stm = String.Format(@"INSERT employee_id, vehicle_number, start_time INTO T_SHIFT VALUES ('{0}', '{1}', date('now'))",
-                id.ToString(), vehicleNum.ToString());
+               id.ToString(), vehicleNum.ToString());
+
+        
 
             con.ExecuteUpdate(stm);
 
@@ -145,7 +147,7 @@ namespace Project_Opal
             DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
             con.Open();
 
-            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = date('now') WHERE id = {0}'", id.ToString());
+            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = date('now') WHERE id = '{0}'", id.ToString());
 
             con.ExecuteUpdate(stm);
 
