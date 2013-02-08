@@ -1,13 +1,14 @@
-from bottle import *
-from bottle_sqlite import *
-from hashlib import *
+import bottle
+import dbinterface
+import Secure
 
+db = dbinterface.DB()
 
-@route('/hello')
+@bottle.route('/hello')
 def hello():
     return "Hello World!"
 
-@route('/')
+@bottle.route('/')
 def loginForm():
     return '''<form method="POST" action="/login">
                 <input name="name"     type="text" />
@@ -16,19 +17,33 @@ def loginForm():
               </form>'''
 
 
-@post('/login')
+@bottle.post('/login')
 def login_submit():
-    name     = request.forms.get('name')
-    password = request.forms.get('password')
-    if check_login(name, password):
+    name     = bottle.request.forms.get('name')
+    password = bottle.request.forms.get('password')
+    databasePassword = db.grabPW(name)
+    if databasePassword == None:
+        print("Couldnt find user in DB Named: %s" %name)
+    else:
+        print("Success!!")
+        print(databasePassword)
+    if check_login(password, databasePassword):
         return "<p>Your login was correct</p>"
     else:
         return "<p>Login failed</p>"
 
 
 
-def check_login(name, password):
-    return True
+def check_login(givenPassword, hashedPassword):
+    givenPasswordHashed = Secure.SecureIt(givenPassword)
+    correctedDBPassword = hashedPassword.replace("-","").lower()
 
-run(host='localhost', port=8080, debug=True)
+    if givenPasswordHashed == correctedDBPassword:
+        return True
+    else:
+        return False
+
+
+
+bottle.run(host='localhost', port=8080)
 
