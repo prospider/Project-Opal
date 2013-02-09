@@ -28,9 +28,12 @@ _ReSharper*/
 *.vssscc
 $tf*/
 
-/__pycache__/
-/__pycache__
-/.idea/
+webclient/__pycache__/
+webclient/__pycache__
+webclient/.idea/
+webclient/__pycache__/*
+webclient/__pycache__*
+webclient/.idea/*
 /.idea
 .idea
 //.idea//
