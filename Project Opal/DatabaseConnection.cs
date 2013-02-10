@@ -9,7 +9,6 @@ namespace Project_Opal
 {
     public class DatabaseConnection
     {
-
         public static readonly string CONNECTION_STRING = "Data Source=payroll.db3";
         public static readonly string DATABASE_LOG = "Database_Log.txt";
 
@@ -17,8 +16,6 @@ namespace Project_Opal
         SQLiteCommand cmd = null;
         private Logger log;
         private string conString;
-        
-
 
         public DatabaseConnection(string logFile, string conString = "Data Source=payroll.db3")
         {

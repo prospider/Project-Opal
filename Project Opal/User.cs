@@ -126,7 +126,7 @@ namespace Project_Opal
             DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
             con.Open();
 
-            string stm = String.Format(@"INSERT employee_id, vehicle_number, start_time INTO T_SHIFT VALUES ('{0}', '{1}', date('now'))",
+            string stm = String.Format(@"INSERT INTO T_SHIFT (employee_id, vehicle_number, start_time) VALUES ('{0}', '{1}', date('now'))",
                id.ToString(), vehicleNum.ToString());
 
         
