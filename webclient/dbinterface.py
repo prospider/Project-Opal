@@ -27,6 +27,35 @@ class DB:
         else:
             return None
 
+    def grabUserList(self):
+        print("Entering -> GrabUserList")
+        stm = "SELECT username, user_id from T_CREDENTIALS ORDER BY username ASC"
+        userList = self.executeSql(stm)
+
+        if userList:
+            return userList
+        else:
+            return None
+
+    def grabShiftCountByUserID(self,userID):
+        stm = "SELECT COUNT(*) FROM T_SHIFT WHERE employee_id = %s" %userID
+        shiftCount = self.executeSql(stm)
+        return shiftCount[0][0]
+        #This is super patchwork code, should be tightened with try/catch stuff.
+
+    def grabStartTimesByUserID(self, userID):
+        stm = "SELECT start_time FROM T_SHIFT WHERE employee_id = %s" %userID
+        shiftStartTimes = self.executeSql(stm)
+        for item in shiftStartTimes:
+            print(item)
+        return shiftStartTimes
+
+    def grabMostRecentShiftByUserID(self,userID):
+        stm = "SELECT start_time, end_time FROM T_SHIFT WHERE employee_id = %s ORDER BY start_time DESC" %userID
+        shiftStartTimes = self.executeSql(stm)
+        for item in shiftStartTimes:
+            print(item)
+        return shiftStartTimes
 
 
     def executeSql(self, sql):

@@ -1,6 +1,7 @@
 import bottle
 import dbinterface
 import Secure
+import time
 
 db = dbinterface.DB()
 
@@ -10,11 +11,49 @@ def hello():
 
 @bottle.route('/')
 def loginForm():
+    db.grabStartTimesByUserID(1)
     return '''<form method="POST" action="/login">
                 <input name="name"     type="text" />
                 <input name="password" type="password" />
                 <input type="submit" />
               </form>'''
+
+
+@bottle.route('/menu')
+def main_menu():
+    return "<p>this is a test</p>"
+
+
+@bottle.route('/analytics')
+def analytics_page():
+    userList = db.grabUserList()
+
+    print(userList)
+    returnHtml = '''<p>Please select a user.</p>
+    <form action='/analytics' method='POST'>
+    <select name='selecteduser'>'''
+    for tuple in userList:
+        returnHtml += '<option value="%s">%s</option>' %(tuple[1],tuple[0])
+    returnHtml += '''</select>
+    <input type='submit' value='Analyze' />
+    '''
+    return returnHtml
+
+@bottle.post('/analytics')
+def analyze():
+    userID = bottle.request.forms.get('selecteduser')
+    workedShifts = db.grabShiftCountByUserID(userID)
+    return '''
+    <p>Shifts worked: %s</p>
+    <p>Most common start time: </p>
+    ''' %workedShifts
+
+
+@bottle.route('/overview')
+def overview_page():
+    pass
+
+
 
 
 @bottle.post('/login')
@@ -23,14 +62,16 @@ def login_submit():
     password = bottle.request.forms.get('password')
     databasePassword = db.grabPW(name)
     if databasePassword == None:
-        print("Couldnt find user in DB Named: %s" %name)
+        return "Couldnt find user in DB Named: %s" %name
     else:
         print("Success!!")
         print(databasePassword)
-    if check_login(password, databasePassword):
-        return "<p>Your login was correct</p>"
-    else:
-        return "<p>Login failed</p>"
+        if check_login(password, databasePassword):
+            return '''<p>Your login was correct</p>
+            <a href="/menu">Main Menu</a>
+            '''
+        else:
+            return "<p>Login failed</p>"
 
 
 
