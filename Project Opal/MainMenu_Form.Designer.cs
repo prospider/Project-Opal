@@ -35,7 +35,7 @@
             // 
             // btnClock
             // 
-            this.btnClock.Location = new System.Drawing.Point(24, 16);
+            this.btnClock.Location = new System.Drawing.Point(24, 12);
             this.btnClock.Name = "btnClock";
             this.btnClock.Size = new System.Drawing.Size(232, 64);
             this.btnClock.TabIndex = 0;

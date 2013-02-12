@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.SQLite;
+using System.Data;
 
 namespace Project_Opal
 {
@@ -22,15 +22,11 @@ namespace Project_Opal
         public static User Login(string username, string password)
         {
             // Pass password as plaintext
-            DatabaseConnection db;
-            db = new DatabaseConnection("UserLog.txt");
             log = new Logger(LOG_FILE);
-
-            db.Open();
 
             string stm = String.Format("SELECT password FROM T_CREDENTIALS WHERE username = '{0}'", username);
 
-            var row = db.ExecuteScalar(stm);
+            var row = DatabaseConnection.ExecuteScalar(stm);
 
             if (row != null)
             {
@@ -39,7 +35,7 @@ namespace Project_Opal
                 if (retrievedPassword.Equals(hashedInputPassword))
                 {
                     // Access granted
-                    SQLiteDataReader userInformationReader;
+                    DataTable userInformationTable;
 
                     stm = String.Format(@"SELECT T_USER.id, T_USER.name, T_USER.address, T_USER.sin, T_USER.bank_account, T_USER.wage
                                         FROM T_USER
@@ -47,17 +43,14 @@ namespace Project_Opal
                                         ON T_USER.id = T_CREDENTIALS.user_id
                                         WHERE T_CREDENTIALS.username = '{0}'", username);
 
-                    userInformationReader = db.ExecuteSelect(stm);
-                    userInformationReader.Read();
+                    userInformationTable = DatabaseConnection.ExecuteSelect(stm);
 
-                    User ret = new User(userInformationReader.GetInt32(0),
-                        userInformationReader.GetString(1),
-                        userInformationReader.GetString(2),
-                        userInformationReader.GetInt32(3),
-                        userInformationReader.GetString(4),
-                        userInformationReader.GetDouble(5));
-
-                    db.Close();
+                    User ret = new User(Convert.ToInt32(userInformationTable.Rows[0][0]),
+                        userInformationTable.Rows[0][1].ToString(),
+                        userInformationTable.Rows[0][2].ToString(),
+                        Convert.ToInt32(userInformationTable.Rows[0][3]),
+                        userInformationTable.Rows[0][4].ToString(),
+                        Convert.ToDouble(userInformationTable.Rows[0][5]));
 
                     return ret;
                 }
@@ -65,7 +58,6 @@ namespace Project_Opal
                 {
                     // Access denied
                     log.Write(String.Format("{0} failed login request with password: {1}", username.ToUpper(), password));
-                    db.Close();
                     return null;
                 }
             }
@@ -73,7 +65,6 @@ namespace Project_Opal
             {
                 // User doesn't exist
                 log.Write(String.Format("{0} attempted login, but user does not exist", username.ToUpper()));
-                db.Close();
                 return null;
             }
         }
@@ -92,31 +83,22 @@ namespace Project_Opal
 
         public Shift GetOpenShift()
         {
-            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
-            con.Open();
-
-            SQLiteDataReader latestOpenShift = con.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time
+            DataTable latestOpenShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time
                                                                         FROM T_SHIFT 
                                                                         WHERE employee_id = {0}
                                                                         AND end_time IS NULL", id.ToString()));
 
-            if (latestOpenShift.HasRows)
+            if (latestOpenShiftTable.Rows.Count > 0)
             {
-                latestOpenShift.Read();
-
-                Shift shf = new Shift(latestOpenShift.GetInt32(0),
-                    latestOpenShift.GetInt32(1),
-                    latestOpenShift.GetInt32(2),
-                    latestOpenShift.GetDateTime(3));
-
-                con.Close();
+                Shift shf = new Shift(Convert.ToInt32(latestOpenShiftTable.Rows[0][0]),
+                    Convert.ToInt32(latestOpenShiftTable.Rows[0][1]),
+                    Convert.ToInt32(latestOpenShiftTable.Rows[0][2]),
+                    Convert.ToDateTime(latestOpenShiftTable.Rows[0][3]));
 
                 return shf;
             }
             else
             {
-                con.Close();
-
                 return null;
             }
         }
@@ -131,11 +113,11 @@ namespace Project_Opal
 
         
 
-            con.ExecuteUpdate(stm);
+            DatabaseConnection.ExecuteUpdate(stm);
 
-            stm = "SELECT id, MAX(start_date) FROM T_SHIFT WHERE employee_id = '{0}' AND end_time IS NULL";
+            stm = String.Format("SELECT id FROM T_SHIFT WHERE employee_id = '{0}' AND end_time IS NULL", id);
 
-            var newRowId = con.ExecuteScalar(stm);
+            var newRowId = DatabaseConnection.ExecuteScalar(stm);
 
             Shift ret = new Shift(Convert.ToInt32(newRowId), id, vehicleNum, DateTime.Now);
 
@@ -144,14 +126,9 @@ namespace Project_Opal
 
         public void ClockOut(Shift s)
         {
-            DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
-            con.Open();
+            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = date('now') WHERE id = '{0}'", s.id);
 
-            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = date('now') WHERE id = '{0}'", id.ToString());
-
-            con.ExecuteUpdate(stm);
-
-            con.Close();
+            DatabaseConnection.ExecuteUpdate(stm);
 
             s.endTime = DateTime.Now;
         }

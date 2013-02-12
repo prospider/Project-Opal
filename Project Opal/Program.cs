@@ -49,19 +49,16 @@ namespace Project_Opal
 
         static void CheckDatabase()
         {
-            DatabaseConnection db;
+            DatabaseConnection DatabaseConnection;
 
             try
             {
-                db = new DatabaseConnection("ProgramLog.txt");
-                db.Open();
-
                 string stm = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'T_SHIFT'";
                 log.Write(String.Format("Executed Query: {0}", stm));
-                var rows = db.ExecuteScalar(stm);
+                var rows = DatabaseConnection.ExecuteScalar(stm);
 
                 /// <warning>
-                /// If you change these tables structures, BE SURE TO DELETE payroll.db3 IN THE DEBUG FOLDER.
+                /// If you change these tables structures, BE SURE TO DELETE payroll.DatabaseConnection3 IN THE DEBUG FOLDER.
                 /// If you don't, you're gonna have a bad time.
                 /// </warning>
 
@@ -78,7 +75,7 @@ namespace Project_Opal
                                 FOREIGN KEY(id) REFERENCES T_USER(id)
                             );";
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
 
                     stm = @"CREATE TABLE T_USER
                             (
@@ -90,7 +87,7 @@ namespace Project_Opal
                                 wage REAL NOT NULL
                             );";
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
 
                     stm = @"CREATE TABLE T_CREDENTIALS
                             (
@@ -101,10 +98,8 @@ namespace Project_Opal
                                 FOREIGN KEY(user_id) REFERENCES T_USER(id)
                             );";
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
                 }
-
-                db.Close();
                 //TODO: Double check that tables were created
             }
             catch (SQLiteException ex)
@@ -118,22 +113,18 @@ namespace Project_Opal
 
         static void SeedDebugDatabase()
         {
-            DatabaseConnection db;
-
             try
             {
                 log.Write("Seeding Data into new database");
-                db = new DatabaseConnection("ProgramLog.txt");
-                db.Open();
 
                 string stm = "SELECT * FROM 'T_USER'";
                 log.Write(string.Format("Executing SQL: {0}", stm));
-                var rows = db.ExecuteScalar(stm);
+                var rows = DatabaseConnection.ExecuteScalar(stm);
 
                 if (rows == null)
                 {
                     /// <warning>
-                    /// If you change these seed values, BE SURE TO DELETE payroll.db3 IN THE DEBUG FOLDER.
+                    /// If you change these seed values, BE SURE TO DELETE payroll.DatabaseConnection3 IN THE DEBUG FOLDER.
                     /// If you don't, you're gonna have a bad time.
                     /// </warning>
                     /// 
@@ -146,7 +137,7 @@ namespace Project_Opal
                                         '5667.00' AS 'wage'
                             ";
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
 
                     stm = String.Format(@"INSERT INTO 'T_CREDENTIALS' ('user_id', 'username', 'password')
                                     SELECT '1' AS 'user_id', 'bob' AS 'username', '{0}' AS 'password'
@@ -154,23 +145,21 @@ namespace Project_Opal
                             UNION   SELECT '3' AS 'user_id', 'tom' AS 'username', '{2}' AS 'password'
                             ", Secure.Hash("opal"), Secure.Hash("ruby"), Secure.Hash("topaz"));
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
 
                     stm = @"INSERT INTO 'T_SHIFT' ('employee_id', 'vehicle_number', 'start_time', 'end_time')
                                     SELECT '1' AS 'employee_id', '10' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' as 'end_time'
                             UNION   SELECT '3' AS 'employee_id', '13' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' as 'end_time'";
                     //TODO: Verify insert succeeded
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
 
                     stm = @"INSERT INTO 'T_SHIFT' ('employee_id', 'vehicle_number', 'start_time')
                                     SELECT '2' AS 'employee_id', '11' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time'
                             UNION   SELECT '3' AS 'employee_id', '13' AS 'vehicle_number', '2013-01-02 09:00' AS 'start_time'";
 
-                    rows = db.ExecuteUpdate(stm);
+                    rows = DatabaseConnection.ExecuteUpdate(stm);
                 }
-
-                db.Close();
             }
             catch (SQLiteException ex)
             {

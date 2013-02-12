@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using System.Data;
 
 namespace Project_Opal
 {
@@ -50,72 +51,107 @@ namespace Project_Opal
         }
 
         //FOR UPDATE/INSERT/DELETE ONLY. Returns the number of affected rows. 
-        public int ExecuteUpdate(string sqlString)
+        static public int ExecuteUpdate(string sqlString)
         {
-            int affectedRows;
-
-            DisposeOldCommand();
-
-            try
+            using(SQLiteConnection con = new SQLiteConnection(CONNECTION_STRING))
             {
-                cmd = new SQLiteCommand(sqlString, con);
-                affectedRows = cmd.ExecuteNonQuery();
-                log.Write(String.Format("Executed Update: {0}\nRows Affected: {1}", sqlString, affectedRows));
-                return affectedRows;
-            }
-            catch (SQLiteException e)
-            {
-                log.Write(String.Format("SQLite Update/Insert/Delete failed: {0}\nFailure caused by: {1}", e, sqlString),1);
-                throw e;
+                con.Open();
+
+                using (SQLiteCommand cmd = new SQLiteCommand(sqlString, con))
+                {
+                    int affectedRows;
+
+                    try
+                    {
+                        affectedRows = cmd.ExecuteNonQuery();
+                        //log.Write(String.Format("Executed Update: {0}\nRows Affected: {1}", sqlString, affectedRows));
+                        return affectedRows;
+                    }
+                    catch (SQLiteException e)
+                    {
+                        //log.Write(String.Format("SQLite Update/Insert/Delete failed: {0}\nFailure caused by: {1}", e, sqlString), 1);
+                        throw e;
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                        con.Close();
+                        con.Dispose();
+                    }
+                }
             }
         }
 
         //FOR SELECT STATEMENTS ONLY. Returns the reader which can be foreach'd through 
-        public SQLiteDataReader ExecuteSelect(string sqlString)
+        static public DataTable ExecuteSelect(string sqlString)
         {
-            SQLiteDataReader resultSet;
-
-            DisposeOldCommand();
-
-            try
+            using (SQLiteConnection con = new SQLiteConnection(CONNECTION_STRING))
             {
-                cmd = new SQLiteCommand(sqlString, con);
-                resultSet = cmd.ExecuteReader();
-                log.Write(String.Format("Select Executed Successfully: {0}", sqlString));
-                return resultSet;
-            }
-            catch(SQLiteException e)
-            {
+                con.Open();
 
-                log.Write(String.Format("SQLite Select failed: {0}\nFailure caused by: {1} ", e, sqlString),1);
-                throw e;
+                using (SQLiteCommand cmd = new SQLiteCommand(sqlString, con))
+                {
+                    SQLiteDataReader resultSet;
+                    DataTable dt;
+
+                    try
+                    {
+                        resultSet = cmd.ExecuteReader();
+                        dt = new DataTable();
+                        dt.Load(resultSet);
+                        //log.Write(String.Format("Select Executed Successfully: {0}", sqlString));
+                        return dt;
+                    }
+                    catch (SQLiteException e)
+                    {
+                        //log.Write(String.Format("SQLite Select failed: {0}\nFailure caused by: {1} ", e, sqlString), 1);
+                        throw e;
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                        con.Close();
+                        con.Dispose();
+                    }
+                }
             }
         }
 
         //FOR SELECT STATEMENTS ONLY. Returns first row of first column of result.
-        public object ExecuteScalar(string sqlString)
+        static public object ExecuteScalar(string sqlString)
         {
-            object result;
+            using (SQLiteConnection con = new SQLiteConnection(CONNECTION_STRING))
+            {
+                con.Open();
 
-            DisposeOldCommand();
+                using (SQLiteCommand cmd = new SQLiteCommand(sqlString, con))
+                {
+                    object result;
 
-            try
-            {
-                cmd = new SQLiteCommand(sqlString, con);
-                result = cmd.ExecuteScalar();
-                log.Write(String.Format("Scalar Executed Successfully: {0}", sqlString));
-                return result;
-            }
-            catch (SQLiteException e)
-            {
-                log.Write(String.Format("SQLite Select failed: {0} ", e), 1);
-                throw e;
-            }
-            catch (InvalidOperationException e)
-            {
-                System.Windows.Forms.MessageBox.Show(String.Format("Your SQL statement was incorrect. SQL: {0}",
-                    sqlString));
-                throw e;
+                    try
+                    {
+                        result = cmd.ExecuteScalar();
+                        //log.Write(String.Format("Scalar Executed Successfully: {0}", sqlString));
+                        return result;
+                    }
+                    catch (SQLiteException e)
+                    {
+                        //log.Write(String.Format("SQLite Select failed: {0} ", e), 1);
+                        throw e;
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        System.Windows.Forms.MessageBox.Show(String.Format("Your SQL statement was incorrect. SQL: {0}",
+                            sqlString));
+                        throw e;
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                        con.Close();
+                        con.Dispose();
+                    }
+                }
             }
         }
 
@@ -148,7 +184,7 @@ namespace Project_Opal
             }
             catch (Exception e)
             {
-                log.Write(String.Format("Could not close and dispose DB Connection: {0}" , e.ToString()), 1);
+                log.Write(String.Format("Could not close and dispose DatabaseConnection Connection: {0}" , e.ToString()), 1);
             }
 
             if (cmd != null)

@@ -19,6 +19,7 @@ namespace Project_Opal
         public MainMenu_Form(User u)
         {
             InitializeComponent();
+            btnClock.Font = new Font(btnClock.Font.FontFamily, 24);
             currentUser = u;
             currentShift = u.GetOpenShift();
             InitializeFormElements();
