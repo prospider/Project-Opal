@@ -13,6 +13,8 @@ namespace Project_Opal
 {
     public partial class Login_Form : Form
     {
+        public User currentUser;
+
         public Login_Form()
         {
             InitializeComponent();
@@ -51,11 +53,11 @@ namespace Project_Opal
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            User currentUser = User.Login(txtUsername.Text.ToString(), txtPassword.Text.ToString());
+            User current = User.Login(txtUsername.Text.ToString(), txtPassword.Text.ToString());
 
-            if(currentUser != null)
+            if(current != null)
             {
-                Program.currentUser = currentUser;
+                currentUser = current;
                 this.DialogResult = DialogResult.OK;
             }
             else

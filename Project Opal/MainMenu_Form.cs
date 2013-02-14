@@ -29,24 +29,37 @@ namespace Project_Opal
         {
             if (currentShift != null)
             {
-                btnClockToClockOut();
+                ChangeBtnClock("Clock out", String.Format("You have an open shift started at: {0}", currentShift.startTime.ToString()));
             }
             else
             {
-                btnClockToClockIn();            
+                ChangeBtnClock("Clock in", "");
             }
         }
 
-        private void btnClockToClockOut()
+        private void LogOutAndReopen()
         {
-            btnClock.Text = "Clock out";
-            lblShiftInformation.Text = String.Format("You have an open shift started at: {0}", currentShift.startTime.ToString());
+            Login_Form loginForm = new Login_Form();
+
+            this.Visible = false;
+
+            if (loginForm.ShowDialog() == DialogResult.OK)
+            {
+                currentUser = loginForm.currentUser;
+                currentShift = currentUser.GetOpenShift();
+                InitializeFormElements();
+                this.Visible = true;
+            }
+            else
+            {
+                Application.Exit();
+            }
         }
 
-        private void btnClockToClockIn()
+        private void ChangeBtnClock(string buttonText, string shiftInformationText)
         {
-            btnClock.Text = "Clock in";
-            lblShiftInformation.Text = "";
+            btnClock.Text = buttonText;
+            lblShiftInformation.Text = shiftInformationText;
         }
         
         private void btnClock_Click(object sender, EventArgs e)
@@ -54,13 +67,14 @@ namespace Project_Opal
             if (currentShift != null)
             {
                 currentUser.ClockOut(currentShift);
-                btnClockToClockIn();
             }
             else
             {
+
                 currentShift = currentUser.ClockIn(1); //TODO: Get input for vehicle number
-                btnClockToClockOut();
             }
+
+            LogOutAndReopen();
         }
     }
 }

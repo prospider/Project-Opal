@@ -34,6 +34,7 @@ namespace Project_Opal
 
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
+                currentUser = loginForm.currentUser;
                 Application.Run(new MainMenu_Form(currentUser));
             }
             else
