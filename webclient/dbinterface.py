@@ -46,9 +46,10 @@ class DB:
     def grabStartTimesByUserID(self, userID):
         stm = "SELECT start_time FROM T_SHIFT WHERE employee_id = %s" %userID
         shiftStartTimes = self.executeSql(stm)
-        for item in shiftStartTimes:
-            print(item)
-        return shiftStartTimes
+
+        returnArray = [theStartTime[0] for theStartTime in shiftStartTimes]
+        print(returnArray)
+        return returnArray
 
     def grabMostRecentShiftByUserID(self,userID):
         stm = "SELECT start_time, end_time FROM T_SHIFT WHERE employee_id = %s ORDER BY start_time DESC" %userID
@@ -69,8 +70,8 @@ class DB:
             print("No rows returned, empty DB? Wrong Table?")
         else:
             print("Grabbed resultSet list...")
-            for item in resultSet:
-                print(item)
+            #for item in resultSet:
+            #    print(item)
 
 
         print("Leaving -> executeSql")
