@@ -76,5 +76,11 @@ namespace Project_Opal
 
             LogOutAndReopen();
         }
+
+        private void btnReview_Click(object sender, EventArgs e)
+        {
+            Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
+            lblShiftInformation.Text = previousShifts[3].startTime.ToString() + " - " + previousShifts[3].endTime.ToString();
+        }
     }
 }

@@ -51,6 +51,7 @@
             this.btnReview.TabIndex = 1;
             this.btnReview.Text = "Review Shifts";
             this.btnReview.UseVisualStyleBackColor = true;
+            this.btnReview.Click += new System.EventHandler(this.btnReview_Click);
             // 
             // lblShiftInformation
             // 

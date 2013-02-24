@@ -132,5 +132,28 @@ namespace Project_Opal
 
             s.endTime = DateTime.Now;
         }
+        
+        public Shift[] PreviousShifts(User user)
+        {
+            DateTime NowDate = DateTime.Now;
+
+            DataTable PreviousShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
+                                                                        FROM T_SHIFT 
+                                                                        WHERE employee_id = {0}", user.id.ToString()));
+
+            Shift[] shiftArray = new Shift[PreviousShiftTable.Rows.Count];
+            
+            //Need to add exception for when the user has an unfinished shift
+            for (int i = 0; i < PreviousShiftTable.Rows.Count; i++)
+            {
+                    Shift shf = new Shift(Convert.ToInt32(PreviousShiftTable.Rows[i][0]),
+                      Convert.ToInt32(PreviousShiftTable.Rows[i][1]),
+                      Convert.ToInt32(PreviousShiftTable.Rows[i][2]),
+                      Convert.ToDateTime(PreviousShiftTable.Rows[i][3]),
+                      Convert.ToDateTime(PreviousShiftTable.Rows[i][4]));
+                    shiftArray[i] = shf;
+            }
+            return shiftArray;
+        }
     }
 }
