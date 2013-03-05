@@ -15,6 +15,8 @@ class DB:
             print("Connection to DB established.")
             #test
 
+    def createUser(self, fn, ln, pw):
+        #todo hash the pw, pass request off to DB.
 
     def grabPW(self, username):
         print("Entering _> GrabPW: For user %s" %username)

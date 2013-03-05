@@ -21,7 +21,11 @@ def loginForm():
 
 @bottle.route('/menu')
 def main_menu():
-    return "<p>this is a test</p>"
+    return '''<p><a href='/Analytics'>Analytics</a></p>
+    <p><a href="/Register">Register New Employee</a>
+    '''
+
+
 
 
 @bottle.route('/analytics')
@@ -53,6 +57,35 @@ def analyze():
 def overview_page():
     pass
 
+@bottle.route('/Registering')
+def registering():
+    userFN = bottle.request.forms.get('First Name')
+    userLN = bottle.request.forms.get('Last Name')
+    userPW = bottle.request.forms.get('Password')
+    userPC = bottle.request.forms.get('Confirm Password')
+    if (userPW != userPC):
+        return "Passwords do not match! Go back and correct the issue."
+    else:
+
+
+
+
+
+
+
+@bottle.route('/Register')
+def register_employee():
+    return '''<form method="POST" action="/registering">
+                First Name: <input name="First Name"     type="text" />
+                </br>
+                Last Name: <input name="Last Name"    type="text" />
+                </br>
+                Password: <input name="Password"  type="password" />
+                </br>
+                Confirm Password:<input name="Confirm Password" type="password">
+                </br>
+                <input type="submit" />
+              </form>'''
 
 
 
@@ -86,5 +119,5 @@ def check_login(givenPassword, hashedPassword):
 
 
 
-bottle.run(host='localhost', port=8080)
+bottle.run(host='localhost', port=8082)
 
