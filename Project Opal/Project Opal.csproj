@@ -74,6 +74,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReviewShifts_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReviewShifts_Form.Designer.cs">
+      <DependentUpon>ReviewShifts_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Secure.cs" />
     <Compile Include="Shift.cs" />
     <Compile Include="User.cs" />
@@ -92,6 +98,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ReviewShifts_Form.resx">
+      <DependentUpon>ReviewShifts_Form.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

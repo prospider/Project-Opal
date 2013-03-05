@@ -149,8 +149,8 @@ namespace Project_Opal
                     rows = DatabaseConnection.ExecuteUpdate(stm);
 
                     stm = @"INSERT INTO 'T_SHIFT' ('employee_id', 'vehicle_number', 'start_time', 'end_time')
-                                    SELECT '1' AS 'employee_id', '10' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' as 'end_time'
-                            UNION   SELECT '3' AS 'employee_id', '13' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' as 'end_time'";
+                                    SELECT '1' AS 'employee_id', '10' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' AS 'end_time'
+                            UNION   SELECT '3' AS 'employee_id', '13' AS 'vehicle_number', '2013-01-01 09:00' AS 'start_time', '2013-01-01 17:00' AS 'end_time'";
                     //TODO: Verify insert succeeded
 
                     rows = DatabaseConnection.ExecuteUpdate(stm);

@@ -25,6 +25,17 @@ namespace Project_Opal
             InitializeFormElements();
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+            LogOutAndReopen();
+
+            e.Cancel = true;
+        }
+
         private void InitializeFormElements()
         {
             if (currentShift != null)
@@ -79,8 +90,10 @@ namespace Project_Opal
 
         private void btnReview_Click(object sender, EventArgs e)
         {
-            Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
-            lblShiftInformation.Text = previousShifts[3].startTime.ToString() + " - " + previousShifts[3].endTime.ToString();
+            Form reviewShifts = new ReviewShifts_Form(currentUser.PreviousShifts());
+            reviewShifts.ShowDialog();
+            //Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
+            //lblShiftInformation.Text = previousShifts[3].startTime.ToString() + " - " + previousShifts[3].endTime.ToString();
         }
     }
 }

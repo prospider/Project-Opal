@@ -133,15 +133,17 @@ namespace Project_Opal
             s.endTime = DateTime.Now;
         }
         
-        public Shift[] PreviousShifts(User user)
+        public DataTable PreviousShifts()
         {
             DateTime NowDate = DateTime.Now;
 
             DataTable PreviousShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
                                                                         FROM T_SHIFT 
-                                                                        WHERE employee_id = {0}", user.id.ToString()));
+                                                                        WHERE employee_id = {0}", id.ToString()));
 
-            Shift[] shiftArray = new Shift[PreviousShiftTable.Rows.Count];
+            return PreviousShiftTable;
+
+            /*Shift[] shiftArray = new Shift[PreviousShiftTable.Rows.Count];
             
             //Need to add exception for when the user has an unfinished shift
             for (int i = 0; i < PreviousShiftTable.Rows.Count; i++)
@@ -153,7 +155,7 @@ namespace Project_Opal
                       Convert.ToDateTime(PreviousShiftTable.Rows[i][4]));
                     shiftArray[i] = shf;
             }
-            return shiftArray;
+            return shiftArray;*/
         }
     }
 }
