@@ -25,17 +25,17 @@ namespace Project_Opal
             InitializeFormElements();
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
+/*        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
 
-            LogOutAndReopen();
+            LogOutAndReopen("");
 
             e.Cancel = true;
         }
-
+*/
         private void InitializeFormElements()
         {
             if (currentShift != null)
@@ -48,14 +48,17 @@ namespace Project_Opal
             }
         }
 
-        private void LogOutAndReopen()
+        private void LogOutAndReopen(string msg)
         {
+            MessageBox_Form alertBox = MessageBox_Form.Show(msg, "Message");
+
             Login_Form loginForm = new Login_Form();
 
             this.Visible = false;
 
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
+                alertBox.Close();
                 currentUser = loginForm.currentUser;
                 currentShift = currentUser.GetOpenShift();
                 InitializeFormElements();
@@ -75,17 +78,21 @@ namespace Project_Opal
         
         private void btnClock_Click(object sender, EventArgs e)
         {
+            string logOutReason;
+
             if (currentShift != null)
             {
                 currentUser.ClockOut(currentShift);
+                logOutReason = "You have successfully clocked out.";
             }
             else
             {
 
                 currentShift = currentUser.ClockIn(1); //TODO: Get input for vehicle number
+                logOutReason = "You have successfully clocked in.";
             }
 
-            LogOutAndReopen();
+            LogOutAndReopen(logOutReason);
         }
 
         private void btnReview_Click(object sender, EventArgs e)
