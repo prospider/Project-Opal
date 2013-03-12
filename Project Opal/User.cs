@@ -157,5 +157,21 @@ namespace Project_Opal
             }
             return shiftArray;*/
         }
+        
+        public DataTable SelectedShifts(DateTime selectedDate)
+        {
+            //Need to modify the commented out sql statement so that it only grabs shifts with matching start dates
+            //For now it's just grabbing all of the shifts for the employee_id
+            
+            /*DataTable SelectedShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
+                                                                        FROM T_SHIFT 
+                                                                        WHERE employee_id = {0} AND start_time = {1}", id.ToString(), selectedDate.ToString()));
+            */
+             DataTable SelectedShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
+                                                                        FROM T_SHIFT 
+                                                                        WHERE employee_id = {0}", id.ToString()));
+            
+            return SelectedShiftTable;
+        }
     }
 }

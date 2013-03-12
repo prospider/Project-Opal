@@ -97,10 +97,9 @@ namespace Project_Opal
 
         private void btnReview_Click(object sender, EventArgs e)
         {
-            Form reviewShifts = new ReviewShifts_Form(currentUser.PreviousShifts());
-            reviewShifts.ShowDialog();
+            Form monthCalendar = new MonthCalendar_Form(currentUser.PreviousShifts(), currentUser);
+            monthCalendar.ShowDialog();
             //Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
-            //lblShiftInformation.Text = previousShifts[3].startTime.ToString() + " - " + previousShifts[3].endTime.ToString();
         }
     }
 }
