@@ -15,8 +15,18 @@ class DB:
             print("Connection to DB established.")
             #test
 
-    def createUser(self, fn, ln, pw):
-        #todo hash the pw, pass request off to DB.
+    def createUser(self, fn, ln,ad, sin, wage):
+        stm = '''INSERT INTO T_USER
+                 (name, address,bank_account, sin, wage)
+                 VALUES
+                 ('%s','%s','%s',%s,%s)
+              '''%(fn + " " + ln,ad,"test11",sin,wage)
+        #todo write some code that cuts spaces out of SIN
+        #todo write some code that allows real numbers in the html textbox for wage
+
+        writeCheck = self.executeSql(stm)
+        print(writeCheck)
+
 
     def grabPW(self, username):
         print("Entering _> GrabPW: For user %s" %username)

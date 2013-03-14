@@ -57,15 +57,21 @@ def analyze():
 def overview_page():
     pass
 
-@bottle.route('/Registering')
+@bottle.post('/Registering')
 def registering():
     userFN = bottle.request.forms.get('First Name')
     userLN = bottle.request.forms.get('Last Name')
+    userWG = bottle.request.forms.get('Wage')
+    userAD = bottle.request.forms.get('Address')
+    userSN = bottle.request.forms.get('SIN')
     userPW = bottle.request.forms.get('Password')
     userPC = bottle.request.forms.get('Confirm Password')
     if (userPW != userPC):
         return "Passwords do not match! Go back and correct the issue."
     else:
+        securePW = Secure.SecureIt(userPW)
+        db.createUser(userFN,userLN, userAD, userSN, userWG)
+
 
 
 
@@ -75,10 +81,16 @@ def registering():
 
 @bottle.route('/Register')
 def register_employee():
-    return '''<form method="POST" action="/registering">
+    return '''<form method="POST" action="/Registering">
                 First Name: <input name="First Name"     type="text" />
                 </br>
                 Last Name: <input name="Last Name"    type="text" />
+                </br>
+                Address: <input name="Address"    type="text" />
+                </br>
+                Wage: <input name="Wage"    type="number" />
+                </br>
+                SIN: <input name="SIN"    type="text" />
                 </br>
                 Password: <input name="Password"  type="password" />
                 </br>
@@ -86,6 +98,8 @@ def register_employee():
                 </br>
                 <input type="submit" />
               </form>'''
+
+
 
 
 
@@ -109,13 +123,8 @@ def login_submit():
 
 
 def check_login(givenPassword, hashedPassword):
-    givenPasswordHashed = Secure.SecureIt(givenPassword)
-    correctedDBPassword = hashedPassword.replace("-","").lower()
+    return Secure.Compare(Secure.SecureIt(givenPassword), hashedPassword)
 
-    if givenPasswordHashed == correctedDBPassword:
-        return True
-    else:
-        return False
 
 
 
