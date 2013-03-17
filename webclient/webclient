@@ -4,6 +4,10 @@ import Secure
 import time
 
 db = dbinterface.DB()
+bottle.debug(True)
+
+
+
 
 @bottle.route('/hello')
 def hello():
@@ -28,13 +32,13 @@ def main_menu():
 
 
 
-@bottle.route('/analytics')
+@bottle.route('/Analytics')
 def analytics_page():
     userList = db.grabUserList()
 
     print(userList)
     returnHtml = '''<p>Please select a user.</p>
-    <form action='/analytics' method='POST'>
+    <form action='/Analytics' method='POST'>
     <select name='selecteduser'>'''
     for tuple in userList:
         returnHtml += '<option value="%s">%s</option>' %(tuple[1],tuple[0])
@@ -43,7 +47,7 @@ def analytics_page():
     '''
     return returnHtml
 
-@bottle.post('/analytics')
+@bottle.post('/Analytics')
 def analyze():
     userID = bottle.request.forms.get('selecteduser')
     workedShifts = db.grabShiftCountByUserID(userID)
