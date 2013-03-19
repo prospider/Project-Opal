@@ -17,16 +17,31 @@ class DB:
 
     def createUser(self, fn, ln,ad, sin, wage):
         argumentTuple = (fn + " " + ln, ad, "test11", sin, wage)
+
+        #code to strip spaces and dashes from SIN.
+        for ch in [' ', '-']:
+            if ch in sin:
+                sin = sin.replace(ch, '')
+
+        #This block's purpose is to ensure basic level integrity of the data.
+        try:
+            float(sin)
+            float(wage)
+        except:
+            raise ValueError
+
+        if len(fn) == 0 or len(ln) == 0 or len(ad) == 0 or len(sin) != 9:
+            raise ValueError
+
         stm = '''INSERT INTO T_USER
                  (name, address,bank_account, sin, wage)
                  VALUES
                  (?,?,?,?,?)
               '''
-        #todo write some code that cuts spaces out of SIN
-        #todo write some code that allows real numbers in the html textbox for wage
+
         print(stm)
-        writeCheck = self.executeSql(stm, argumentTuple)
-        print(writeCheck)
+        self.executeSql(stm, argumentTuple)
+
 
 
     def grabPW(self, username):

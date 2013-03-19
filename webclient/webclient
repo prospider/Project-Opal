@@ -74,8 +74,10 @@ def registering():
         return "Passwords do not match! Go back and correct the issue."
     else:
         securePW = Secure.SecureIt(userPW)
-        db.createUser(userFN,userLN, userAD, userSN, userWG)
-
+        try:
+            db.createUser(userFN,userLN, userAD, userSN, userWG)
+        except ValueError:
+            return '''<p>Invalid information. Please Retry. Every field must be populated, wage must be a number, and sin must be exactly nine numbers.  </p>'''
 
 
 
@@ -92,7 +94,7 @@ def register_employee():
                 </br>
                 Address: <input name="Address"    type="text" />
                 </br>
-                Wage: <input name="Wage"    type="number" />
+                Wage: <input name="Wage"    type="number" step="any" min="10.25"/>
                 </br>
                 SIN: <input name="SIN"    type="text" />
                 </br>
