@@ -82,12 +82,10 @@ class DB:
         print(returnArray)
         return returnArray
 
-    def grabMostRecentShiftByUserID(self,userID):
+    def grabAllShiftsByUserID(self,userID):
         argumentTuple = (userID,)
         stm = "SELECT start_time, end_time FROM T_SHIFT WHERE employee_id = ? ORDER BY start_time DESC"
         shiftStartTimes = self.executeSql(stm, argumentTuple)
-        for item in shiftStartTimes:
-            print(item)
         return shiftStartTimes
 
 
