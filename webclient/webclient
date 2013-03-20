@@ -51,9 +51,14 @@ def analytics_page():
 def analyze():
     userID = bottle.request.forms.get('selecteduser')
     workedShifts = db.grabShiftCountByUserID(userID)
+    temp = db.grabMostRecentShiftByUserID(userID)
     return '''
     <p>Shifts worked: %s</p>
     <p>Most common start time: </p>
+    <script src="Chart.js"></script>
+    <canvas id="shiftCountChart" width="400" height="400"></canvas>
+    var ctx = document.getElementbyId("shiftCountChart").getContext("2d");
+    var shiftCountingChart = new Chart(ctx)
     ''' %workedShifts
 
 
