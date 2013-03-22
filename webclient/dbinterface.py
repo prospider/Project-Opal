@@ -88,13 +88,38 @@ class DB:
         shiftStartTimes = self.executeSql(stm, argumentTuple)
         return shiftStartTimes
 
+    def grabAllShiftsForUserWithinDates(self, start_date, end_date, userId):
+        print("Entering-> grabAllShiftsForUserWithinDates()")
+        argumentTuple = (start_date, end_date, userId)
+        print(argumentTuple)
+        stm = '''
+                SELECT * FROM T_SHIFT WHERE start_time > ? and start_time < ? and employee_id = ?
+              '''
+        print(stm)
+        daShifts = self.executeSql(stm, argumentTuple)
+        for item in daShifts:
+            print(item)
+        print("Leaving -> grabAllShiftsForUserWithinDates()")
+        return daShifts
+
+    def grabShiftCountForUserWithinDates(self,start_date, end_date, userId):
+        print("Entering-> grabShiftCountForUserWithinDates()")
+        argumentTuple = (start_date, end_date, userId)
+        print(argumentTuple)
+        stm = '''
+                SELECT COUNT(*) FROM T_SHIFT WHERE start_time > ? and start_time < ? and employee_id = ?
+              '''
+        print(stm)
+        daCount = self.executeSql(stm, argumentTuple)
+        print("Leaving -> grabShiftCountForUserWithinDates()")
+        return daCount[0][0]
+
     def grabAllShiftsByMonthByUserID(self, userID):
         argumentTuple = (userID,)
         stm = "SELECT start_time from T_SHIFT where employee_id = ?"
         allShifts = self.executeSql(stm, argumentTuple)
         returnDict = { 1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0, 6 : 0, 7 : 0, 8 : 0, 9 : 0, 10 : 0, 11 : 0, 12 : 0}
         for item in allShifts:
-            print(item[0])
             if '-01-' in item[0]:
                 returnDict[1] += 1
             elif '-02-' in item[0]:
@@ -120,7 +145,7 @@ class DB:
             elif '-12-' in item[0]:
                 returnDict[12] += 1
 
-        print(returnDict)
+
         return returnDict
 
 
@@ -132,17 +157,15 @@ class DB:
             cursor.execute(sql, argumentTuple)
         else:
             cursor.execute(sql)
-        self.conn.commit()
+
         resultSet = cursor.fetchall()
+        self.conn.commit()
 
         #Checking integrity and returning
         if resultSet == None:
             print("No rows returned, empty DB? Wrong Table?")
         else:
             print("Grabbed resultSet list...")
-            #for item in resultSet:
-            #    print(item)
-
 
         print("Leaving -> executeSql")
 

@@ -34,30 +34,31 @@ def main_menu():
 
 @bottle.route('/Analytics')
 def analytics_page():
-    userList = db.grabUserList()
+    allUsers = db.grabUserList()
 
-    print(userList)
-    returnHtml = '''<p>Please select a user.</p>
-    <form action='/Analytics' method='POST'>
-    <select name='selecteduser'>'''
-    for tuple in userList:
-        returnHtml += '<option value="%s">%s</option>' %(tuple[1],tuple[0])
-    returnHtml += '''</select>
-    <input type='submit' value='Analyze' />
-    '''
-    return returnHtml
+
+    return bottle.template('AnalyticsRoute', userList=allUsers)
 
 @bottle.post('/Analytics')
 def analyze():
+    allUsers = db.grabUserList()
     userID = bottle.request.forms.get('selecteduser')
+    startDate = bottle.request.forms.get('from')
+    endDate = bottle.request.forms.get('to')
+    print(startDate)
+    print(endDate)
+    if startDate != None and endDate != None:
+        print("GRABBED BOTH DATES FROM FORMS")
     workedShifts = db.grabShiftCountByUserID(userID)
     allShifts = db.grabAllShiftsByUserID(userID)
+    allShiftsWithinDates = db.grabAllShiftsForUserWithinDates('2012-01-01','2013-03-01', userID)
     monthlyShiftCount = db.grabAllShiftsByMonthByUserID(userID)
 
 
 
 
-    return bottle.template('Analytics', shiftCount= workedShifts, dict = monthlyShiftCount)
+
+    return bottle.template('Analytics', shiftCount= workedShifts, dict = monthlyShiftCount, userList = allUsers)
 
 
 @bottle.route('/static/:path#.+#', name='static')
