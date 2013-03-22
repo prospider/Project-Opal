@@ -15,19 +15,12 @@ def hello():
 
 @bottle.route('/')
 def loginForm():
-    db.grabStartTimesByUserID(1)
-    return '''<form method="POST" action="/login">
-                <input name="name"     type="text" />
-                <input name="password" type="password" />
-                <input type="submit" />
-              </form>'''
+    return bottle.template('Index')
 
 
 @bottle.route('/menu')
 def main_menu():
-    return '''<p><a href='/Analytics'>Analytics</a></p>
-    <p><a href="/Register">Register New Employee</a>
-    '''
+    return bottle.template('MainMenu')
 
 
 
@@ -35,8 +28,6 @@ def main_menu():
 @bottle.route('/Analytics')
 def analytics_page():
     allUsers = db.grabUserList()
-
-
     return bottle.template('AnalyticsRoute', userList=allUsers)
 
 @bottle.post('/Analytics')
@@ -98,23 +89,7 @@ def registering():
 
 @bottle.route('/Register')
 def register_employee():
-    return '''<form method="POST" action="/Registering">
-                First Name: <input name="First Name"     type="text" />
-                </br>
-                Last Name: <input name="Last Name"    type="text" />
-                </br>
-                Address: <input name="Address"    type="text" />
-                </br>
-                Wage: <input name="Wage"    type="number" step="any" min="10.25"/>
-                </br>
-                SIN: <input name="SIN"    type="text" />
-                </br>
-                Password: <input name="Password"  type="password" />
-                </br>
-                Confirm Password:<input name="Confirm Password" type="password">
-                </br>
-                <input type="submit" />
-              </form>'''
+    return bottle.template('Register')
 
 
 
