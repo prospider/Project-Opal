@@ -34,16 +34,52 @@
     </form>
 </p>
 
-<p>worked Shifts: {{shiftCount}}</p>
-</br>
-<p>Shifts worked Every Month</p>
-</br>
-<canvas id="barChart" height="300" width="400"></canvas>
-
-<canvas id="shiftLength"></canvas>
+<table>
+    <tr align="center">
+        <td  style="background-color:#B7C68B">
+            <div >
+                <p style="font-family:arial;color:black;font-size:40px;text-align:center">{{user}}</p>
+                <p>Current Date Range:</p>
+                <p>From: {{dates[0]}}</p>
+                <p>To: {{dates[1]}}</p>
+                <p>worked Shifts: {{shiftCount}}</p>
+            </div>
+        </td>
+        <td>
+            <p>Shifts worked overview</p>
+            <canvas id="monthlyShiftsBarChart" height="300" width="400"></canvas>
+        </td>
+    </tr>
+    <tr align="center">
+        <td>
+            <table border = "1">
+                <tr>
+                    <td>Shift Date</td>
+                    <td>Shift Start</td>
+                    <td>Shift End</td>
+                </tr>
+                </table>
+            <div style="overflow: auto;max-height: 400px;">
+                <table border = "1">
+                    %for shift in shiftList:
+                    <tr>
+                        <td>{{shift[3].split(' ')[0]}}</td>
+                        <td>{{shift[3].split(' ')[1]}}</td>
+                        <td>{{shift[4].split(' ')[1]}}</td>
+                    </tr>
+                    %end
+                </table>
+            </div>
+        </td>
+        <td>
+            <p>Day/Night shift proportion</p>
+            <canvas id="dayNightPieChart" height="300" width="300"></canvas>
+        </td>
+    </tr>
+</table>
 
 <script>
-    var data =
+    var monthShiftData =
     {
         labels : ["January","February","March","April","May","June","July", "August", "September", "October", "November", "December"],
         datasets : [
@@ -54,14 +90,29 @@
                 data : [{{dict[1]}},{{dict[2]}},{{dict[3]}},{{dict[4]}},{{dict[5]}},{{dict[6]}},{{dict[7]}},{{dict[8]}},{{dict[9]}},{{dict[10]}},{{dict[11]}},{{dict[12]}}]
             }]
     }
-    var options = { scaleOverride : true,
+    var monthShiftOptions = { scaleOverride : true,
         scaleSteps : 20,
         scaleStartValue : 0,
         scaleStepWidth : 1,
         scaleShowLabels: true,
-        scaleFontSize: 12}
+        scaleFontSize: 12
+    }
+    var dayNightPieData = [
+        {
+            value: {{dayNightRatio['Day']}},
+            color: "#FF8C00"
+        },
+        {
+            value: {{dayNightRatio['Night']}},
+            color: "#3A3A38"
+        }
+    ]
 
-    var myLine = new Chart(document.getElementById("barChart").getContext("2d")).Bar(data, options);
+
+
+    var myLine = new Chart(document.getElementById("monthlyShiftsBarChart").getContext("2d")).Bar(monthShiftData, monthShiftOptions);
+    var dayNightPie = new Chart(document.getElementById("dayNightPieChart").getContext("2d")).Pie(dayNightPieData);
+
 </script>
 
 

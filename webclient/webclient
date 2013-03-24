@@ -2,6 +2,8 @@ import bottle
 import dbinterface
 import Secure
 import time
+import datetime
+import dateutil
 
 db = dbinterface.DB()
 bottle.debug(True)
@@ -32,24 +34,60 @@ def analytics_page():
 
 @bottle.post('/Analytics')
 def analyze():
-    allUsers = db.grabUserList()
+    #Grabbing forms from request.
     userID = bottle.request.forms.get('selecteduser')
     startDate = bottle.request.forms.get('from')
     endDate = bottle.request.forms.get('to')
-    print(startDate)
-    print(endDate)
-    if startDate != None and endDate != None:
-        print("GRABBED BOTH DATES FROM FORMS")
-    workedShifts = db.grabShiftCountByUserID(userID)
+
+    #this checks the cases where the dates are not selected properly by the user, and puts in assumed data(i.e. today, a month ago, whateva whateva i do what i want)
+    if len(startDate) > 5 and len(endDate) < 5:
+        endDate = datetime.datetime.now().strftime('%Y-%m-%d')
+        print("Start date is: " + startDate)
+        print("End date is: " + endDate)
+    elif len(startDate) < 5 and len(endDate)< 5:
+        endDate = datetime.datetime.now()
+        startDate = endDate - datetime.timedelta(days = 30)
+        endDate = endDate.strftime('%Y-%m-%d')
+        startDate = startDate.strftime('%Y-%m-%d')
+        print("Start date is: " + startDate)
+        print("End date is: " + endDate)
+
+
+
+    ############################################
+    #analytics Data initialization             #
+    #this is just for passing into the template#
+    ############################################
+    dateRange = [startDate, endDate]
+    selectedUser = db.grabUserNameByUserID(userID)
+    allUsers = db.grabUserList()
+    workedShiftCount = db.grabShiftCountForUserWithinDates(startDate, endDate, userID)
     allShifts = db.grabAllShiftsByUserID(userID)
-    allShiftsWithinDates = db.grabAllShiftsForUserWithinDates('2012-01-01','2013-03-01', userID)
+    allShiftsWithinDates = db.grabAllShiftsForUserWithinDates(startDate,endDate, userID)
     monthlyShiftCount = db.grabAllShiftsByMonthByUserID(userID)
 
 
+    dayNightDict = {'Day' : 0, 'Night' : 0 }
+
+    for shift in allShiftsWithinDates:
+        start_time = int(shift[3].split(' ')[1].split(':')[0])
+        if start_time <= 12:
+            dayNightDict['Day'] += 1
+        elif start_time > 12:
+            dayNightDict['Night'] += 1
 
 
 
-    return bottle.template('Analytics', shiftCount= workedShifts, dict = monthlyShiftCount, userList = allUsers)
+    ################################
+
+
+    return bottle.template('Analytics', shiftCount= workedShiftCount, \
+                                        dict = monthlyShiftCount, \
+                                        userList = allUsers, \
+                                        dayNightRatio = dayNightDict, \
+                                        dates = dateRange, \
+                                        shiftList = allShiftsWithinDates, \
+                                        user = selectedUser)
 
 
 @bottle.route('/static/:path#.+#', name='static')

@@ -73,6 +73,12 @@ class DB:
         return shiftCount[0][0]
         #todo This is super patchwork code, should be tightened with try/catch stuff.
 
+    def grabUserNameByUserID(self,userID):
+        argumentTuple = (userID,)
+        stm = "SELECT Name FROM T_USER WHERE id = ?"
+        userName = self.executeSql(stm, argumentTuple)
+        return userName[0][0] #as it returns a 2-dimensional Tuple
+
     def grabStartTimesByUserID(self, userID):
         argumentTuple = (userID,)
         stm = "SELECT start_time FROM T_SHIFT WHERE employee_id = ?"
@@ -93,7 +99,7 @@ class DB:
         argumentTuple = (start_date, end_date, userId)
         print(argumentTuple)
         stm = '''
-                SELECT * FROM T_SHIFT WHERE start_time > ? and start_time < ? and employee_id = ?
+                SELECT * FROM T_SHIFT WHERE start_time > ? and start_time < ? and employee_id = ? ORDER BY start_time
               '''
         print(stm)
         daShifts = self.executeSql(stm, argumentTuple)
