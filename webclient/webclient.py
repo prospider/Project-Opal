@@ -40,7 +40,7 @@ def analyze():
     endDate = bottle.request.forms.get('to')
 
     #this checks the cases where the dates are not selected properly by the user, and puts in assumed data(i.e. today, a month ago, whateva whateva i do what i want)
-    if len(startDate) > 5 and len(endDate) < 5:
+    if len(startDate) > 5 > len(endDate):
         endDate = datetime.datetime.now().strftime('%Y-%m-%d')
         print("Start date is: " + startDate)
         print("End date is: " + endDate)
@@ -81,13 +81,13 @@ def analyze():
     ################################
 
 
-    return bottle.template('Analytics', shiftCount= workedShiftCount, \
-                                        dict = monthlyShiftCount, \
-                                        userList = allUsers, \
-                                        dayNightRatio = dayNightDict, \
-                                        dates = dateRange, \
-                                        shiftList = allShiftsWithinDates, \
-                                        user = selectedUser)
+    return bottle.template('Analytics', shiftCount= workedShiftCount,
+                           dict = monthlyShiftCount,
+                           userList = allUsers,
+                           dayNightRatio = dayNightDict,
+                           dates = dateRange,
+                           shiftList = allShiftsWithinDates,
+                           user = selectedUser)
 
 
 @bottle.route('/static/:path#.+#', name='static')
@@ -135,10 +135,14 @@ def register_employee():
 
 @bottle.post('/login')
 def login_submit():
+    """
+    Throws the attempted password off to Check_Login() and returns the result.
+    :return the main menu on correct login or a failure message on bad credentials
+    """
     name     = bottle.request.forms.get('name')
     password = bottle.request.forms.get('password')
     databasePassword = db.grabPW(name)
-    if databasePassword == None:
+    if databasePassword is None:
         return "Couldnt find user in DB Named: %s" %name
     else:
         print("Success!!")
