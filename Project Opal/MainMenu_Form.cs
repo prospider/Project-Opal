@@ -15,6 +15,9 @@ namespace Project_Opal
         private User currentUser;
         private Shift currentShift;
         private bool shiftOpened;
+        private readonly Size DEFAULT_SIZE = new Size(300, 214);
+        private readonly Size REVIEW_SHIFTS_SIZE = new Size(300, 269);
+        private DataTable LAST_SHIFT = null;
 
         public MainMenu_Form(User u)
         {
@@ -23,19 +26,20 @@ namespace Project_Opal
             currentUser = u;
             currentShift = u.GetOpenShift();
             InitializeFormElements();
+            this.Size = DEFAULT_SIZE;
         }
 
-/*        protected override void OnFormClosing(FormClosingEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
 
-            LogOutAndReopen("");
+            LogOutAndReopen();
 
             e.Cancel = true;
         }
-*/
+
         private void InitializeFormElements()
         {
             if (currentShift != null)
@@ -48,19 +52,17 @@ namespace Project_Opal
             }
         }
 
-        private void LogOutAndReopen(string msg)
+        private void LogOutAndReopen()
         {
-            MessageBox_Form alertBox = MessageBox_Form.Show(msg, "Message");
-
             Login_Form loginForm = new Login_Form();
 
             this.Visible = false;
 
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
-                alertBox.Close();
                 currentUser = loginForm.currentUser;
                 currentShift = currentUser.GetOpenShift();
+                LAST_SHIFT = null;
                 InitializeFormElements();
                 this.Visible = true;
             }
@@ -78,28 +80,54 @@ namespace Project_Opal
         
         private void btnClock_Click(object sender, EventArgs e)
         {
-            string logOutReason;
-
             if (currentShift != null)
             {
                 currentUser.ClockOut(currentShift);
-                logOutReason = "You have successfully clocked out.";
             }
             else
             {
 
                 currentShift = currentUser.ClockIn(1); //TODO: Get input for vehicle number
-                logOutReason = "You have successfully clocked in.";
             }
 
-            LogOutAndReopen(logOutReason);
+            LogOutAndReopen();
         }
 
         private void btnReview_Click(object sender, EventArgs e)
         {
-            Form monthCalendar = new MonthCalendar_Form(currentUser.PreviousShifts(), currentUser);
-            monthCalendar.ShowDialog();
+            this.Size = REVIEW_SHIFTS_SIZE;
+            lblLastShift.Visible = true;
+            lblLastShiftInformation.Visible = true;
+            btnCloseReviewShifts.Visible = true;
+            btnMoreShiftInformation.Visible = true;
+            btnReview.Visible = false;
+
+            if (LAST_SHIFT == null)
+            {
+                LAST_SHIFT = currentUser.LastShift();
+            }
+
+            lblLastShiftInformation.Text = String.Format("Started: {0} {1} Ended: {2}", LAST_SHIFT.Rows[0][0].ToString(), Environment.NewLine, LAST_SHIFT.Rows[0][1].ToString());
+            //Form reviewShifts = new ReviewShifts_Form(currentUser.PreviousShifts());
+            //reviewShifts.ShowDialog();
             //Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
+            //lblShiftInformation.Text = previousShifts[3].startTime.ToString() + " - " + previousShifts[3].endTime.ToString();
+        }
+
+        private void btnCloseReviewShifts_Click(object sender, EventArgs e)
+        {
+            this.Size = DEFAULT_SIZE;
+            lblLastShift.Visible = false;
+            lblLastShiftInformation.Visible = false;
+            btnCloseReviewShifts.Visible = false;
+            btnMoreShiftInformation.Visible = false;
+            btnReview.Visible = true;
+        }
+
+        private void btnMoreShiftInformation_Click(object sender, EventArgs e)
+        {
+            ReviewShifts_Form ReviewShiftsForm = new ReviewShifts_Form(currentUser.PreviousShifts(), this.Location.X + this.Width, this.Location.Y);
+            ReviewShiftsForm.ShowDialog();
         }
     }
 }

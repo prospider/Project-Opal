@@ -108,14 +108,20 @@ namespace Project_Opal
             DatabaseConnection con = new DatabaseConnection(DatabaseConnection.DATABASE_LOG);
             con.Open();
 
-            string stm = String.Format(@"INSERT INTO T_SHIFT (employee_id, vehicle_number, start_time) VALUES ('{0}', '{1}', date('now'))",
+            string stm = String.Format(@"
+                INSERT INTO T_SHIFT (employee_id, vehicle_number, start_time) 
+                VALUES ('{0}', '{1}', datetime('now'))",
                id.ToString(), vehicleNum.ToString());
 
         
 
             DatabaseConnection.ExecuteUpdate(stm);
 
-            stm = String.Format("SELECT id FROM T_SHIFT WHERE employee_id = '{0}' AND end_time IS NULL", id);
+            stm = String.Format(@"
+                SELECT id 
+                FROM T_SHIFT 
+                WHERE employee_id = '{0}' 
+                AND end_time IS NULL", id);
 
             var newRowId = DatabaseConnection.ExecuteScalar(stm);
 
@@ -126,7 +132,7 @@ namespace Project_Opal
 
         public void ClockOut(Shift s)
         {
-            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = date('now') WHERE id = '{0}'", s.id);
+            string stm = String.Format(@"UPDATE T_SHIFT SET end_time = datetime('now') WHERE id = '{0}'", s.id);
 
             DatabaseConnection.ExecuteUpdate(stm);
 
@@ -137,9 +143,12 @@ namespace Project_Opal
         {
             DateTime NowDate = DateTime.Now;
 
-            DataTable PreviousShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
-                                                                        FROM T_SHIFT 
-                                                                        WHERE employee_id = {0}", id.ToString()));
+            DataTable PreviousShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"
+                SELECT id, vehicle_number, start_time, end_time
+                FROM T_SHIFT 
+                WHERE employee_id = {0}
+                ORDER BY id DESC
+                LIMIT 50", id.ToString()));
 
             return PreviousShiftTable;
 
@@ -156,6 +165,18 @@ namespace Project_Opal
                     shiftArray[i] = shf;
             }
             return shiftArray;*/
+        }
+
+        public DataTable LastShift()
+        {
+            DataTable LastShiftRaw = DatabaseConnection.ExecuteSelect(String.Format(@"
+                SELECT start_time, end_time
+                FROM T_SHIFT
+                WHERE employee_id = {0}
+                AND end_time IS NOT NULL
+                ORDER BY end_time DESC", id.ToString()));
+
+            return LastShiftRaw;
         }
         
         public DataTable SelectedShifts(DateTime selectedDate)

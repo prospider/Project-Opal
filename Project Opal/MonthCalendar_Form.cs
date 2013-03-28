@@ -45,9 +45,9 @@ namespace Project_Opal
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form reviewShifts = new ReviewShifts_Form(shifts);
-            this.Hide();
-            reviewShifts.ShowDialog();
+            //Form reviewShifts = new ReviewShifts_Form(shifts);
+            //this.Hide();
+            //reviewShifts.ShowDialog();
         }
     }
 }
