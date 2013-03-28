@@ -44,6 +44,7 @@
             this.txtUsername.Text = "Username";
             this.txtUsername.Click += new System.EventHandler(this.txtUsername_Click);
             this.txtUsername.TextChanged += new System.EventHandler(this.txtUsername_TextChanged);
+            this.txtUsername.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUsername_KeyDown);
             // 
             // txtPassword
             // 
@@ -56,6 +57,7 @@
             this.txtPassword.Text = "Password";
             this.txtPassword.Click += new System.EventHandler(this.txtPassword_Click);
             this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
+            this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyDown);
             // 
             // btnLogin
             // 
