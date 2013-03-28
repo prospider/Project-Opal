@@ -18,6 +18,7 @@ namespace Project_Opal
         private DataTable lastShift = null;
         private readonly Size DEFAULT_SIZE = new Size(356, 214);
         private readonly Size REVIEW_SHIFTS_SIZE = new Size(356, 269);
+        private bool mainMenuOpen = true;
 
         public MainMenu_Form(User u)
         {
@@ -35,9 +36,11 @@ namespace Project_Opal
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
 
-            LogOutAndReopen();
-
-            e.Cancel = true;
+            if (mainMenuOpen)
+            {
+                LogOutAndReopen();
+                e.Cancel = true;
+            }
         }
 
         private void InitializeFormElements()
@@ -57,6 +60,7 @@ namespace Project_Opal
             Login_Form loginForm = new Login_Form();
 
             this.Visible = false;
+            mainMenuOpen = false;
 
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
@@ -65,6 +69,7 @@ namespace Project_Opal
                 lastShift = null;
                 InitializeFormElements();
                 this.Visible = true;
+                mainMenuOpen = true;
             }
             else
             {
