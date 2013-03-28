@@ -15,18 +15,18 @@ namespace Project_Opal
         private User currentUser;
         private Shift currentShift;
         private bool shiftOpened;
-        private readonly Size DEFAULT_SIZE = new Size(300, 214);
-        private readonly Size REVIEW_SHIFTS_SIZE = new Size(300, 269);
-        private DataTable LAST_SHIFT = null;
+        private DataTable lastShift = null;
+        private readonly Size DEFAULT_SIZE = new Size(356, 214);
+        private readonly Size REVIEW_SHIFTS_SIZE = new Size(356, 269);
 
         public MainMenu_Form(User u)
         {
             InitializeComponent();
-            btnClock.Font = new Font(btnClock.Font.FontFamily, 24);
             currentUser = u;
             currentShift = u.GetOpenShift();
             InitializeFormElements();
             this.Size = DEFAULT_SIZE;
+            numVehicle.Value = currentUser.LastVehicleUsed();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -62,7 +62,7 @@ namespace Project_Opal
             {
                 currentUser = loginForm.currentUser;
                 currentShift = currentUser.GetOpenShift();
-                LAST_SHIFT = null;
+                lastShift = null;
                 InitializeFormElements();
                 this.Visible = true;
             }
@@ -102,12 +102,12 @@ namespace Project_Opal
             btnMoreShiftInformation.Visible = true;
             btnReview.Visible = false;
 
-            if (LAST_SHIFT == null)
+            if (lastShift == null)
             {
-                LAST_SHIFT = currentUser.LastShift();
+                lastShift = currentUser.LastShift();
             }
 
-            lblLastShiftInformation.Text = String.Format("Started: {0} {1} Ended: {2}", LAST_SHIFT.Rows[0][0].ToString(), Environment.NewLine, LAST_SHIFT.Rows[0][1].ToString());
+            lblLastShiftInformation.Text = String.Format("Started: {0} {1} Ended: {2}", lastShift.Rows[0][0].ToString(), Environment.NewLine, lastShift.Rows[0][1].ToString());
             //Form reviewShifts = new ReviewShifts_Form(currentUser.PreviousShifts());
             //reviewShifts.ShowDialog();
             //Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
@@ -128,6 +128,18 @@ namespace Project_Opal
         {
             ReviewShifts_Form ReviewShiftsForm = new ReviewShifts_Form(currentUser.PreviousShifts(), this.Location.X + this.Width, this.Location.Y);
             ReviewShiftsForm.ShowDialog();
+        }
+
+        private void chkVehicleLocked_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkVehicleLocked.Checked)
+            {
+                numVehicle.Enabled = false;
+            }
+            else
+            {
+                numVehicle.Enabled = true;
+            }
         }
     }
 }

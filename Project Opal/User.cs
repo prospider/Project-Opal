@@ -174,9 +174,21 @@ namespace Project_Opal
                 FROM T_SHIFT
                 WHERE employee_id = {0}
                 AND end_time IS NOT NULL
-                ORDER BY end_time DESC", id.ToString()));
+                ORDER BY id DESC", id.ToString()));
 
             return LastShiftRaw;
+        }
+
+        public int LastVehicleUsed()
+        {
+            object LastVehicleRaw = DatabaseConnection.ExecuteScalar(String.Format(@"
+                SELECT vehicle_number
+                FROM T_SHIFT
+                WHERE employee_id = {0}
+                ORDER BY id DESC
+                LIMIT 1", id.ToString()));
+
+            return Convert.ToInt32(LastVehicleRaw);
         }
         
         public DataTable SelectedShifts(DateTime selectedDate)
