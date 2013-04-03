@@ -31,7 +31,6 @@ namespace Project_Opal
                 this.con = new SQLiteConnection(this.conString);
                 this.con.Open();
                 log.Write(String.Format("Connection opened to: {0}", conString));
-                //return ret; //shouldnt have to return anything...
             }
             catch (SQLiteException ex)
             {
