@@ -3,7 +3,6 @@ import dbinterface
 import Secure
 import time
 import datetime
-import dateutil
 
 db = dbinterface.DB()
 bottle.debug(True)
@@ -162,5 +161,5 @@ def check_login(givenPassword, hashedPassword):
 
 
 
-bottle.run(host='localhost', port=8082, debug=True)
+bottle.run(host='localhost', port=8082)
 
