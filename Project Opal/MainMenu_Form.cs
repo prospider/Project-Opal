@@ -118,8 +118,14 @@ namespace Project_Opal
             {
                 lastShift = currentUser.LastShift();
             }
-
-            lblLastShiftInformation.Text = String.Format("Started: {0} {1} Ended: {2}", lastShift.Rows[0][0].ToString(), Environment.NewLine, lastShift.Rows[0][1].ToString());
+            try
+            {
+                lblLastShiftInformation.Text = String.Format("Started: {0} {1} Ended: {2}", lastShift.Rows[0][0].ToString(), Environment.NewLine, lastShift.Rows[0][1].ToString());
+            }
+            catch(Exception)
+            {
+                lblLastShiftInformation.Text = "No previous shifts found.";
+            }
         }
 
         private void btnCloseReviewShifts_Click(object sender, EventArgs e)
