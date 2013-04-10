@@ -35,6 +35,13 @@ namespace Project_Opal
             base.OnFormClosing(e);
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            
+            this.Size = DEFAULT_SIZE;
+            lblLastShift.Visible = false;
+            lblLastShiftInformation.Visible = false;
+            btnCloseReviewShifts.Visible = false;
+            btnMoreShiftInformation.Visible = false;
+            btnReview.Visible = true;
 
             if (mainMenuOpen)
             {
