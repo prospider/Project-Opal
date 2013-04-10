@@ -167,7 +167,6 @@ namespace Project_Opal
         {
             try
             {
-
                 con.Dispose();
 
                 if (con != null)
@@ -185,7 +184,6 @@ namespace Project_Opal
             {
                 log.Write(String.Format("Could not close and dispose DatabaseConnection Connection: {0}" , e.ToString()), 1);
             }
-
             if (cmd != null)
             {
                 log.Write(string.Format("command disposed of: {0}", cmd));

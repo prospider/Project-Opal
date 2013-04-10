@@ -13,10 +13,8 @@ namespace Project_Opal
 
         public static string Hash(string unsecure)
         {
-            // MD5 nor SHA1 is secure; SHA512 is reasonably secure apparently
-            //works for me. 
+            //Using SHA512
             
-
             byte[] data = Encoding.ASCII.GetBytes(unsecure);
             data = cryptoProvider.ComputeHash(data);
 

@@ -113,10 +113,6 @@ namespace Project_Opal
             }
 
             lblLastShiftInformation.Text = String.Format("Started: {0} {1} Ended: {2}", lastShift.Rows[0][0].ToString(), Environment.NewLine, lastShift.Rows[0][1].ToString());
-            //Form reviewShifts = new ReviewShifts_Form(currentUser.PreviousShifts());
-            //reviewShifts.ShowDialog();
-            //Shift[] previousShifts = currentUser.PreviousShifts(currentUser);
-            //lblShiftInformation.Text = previousShifts[3].startTime.ToString() + " - " + previousShifts[3].endTime.ToString();
         }
 
         private void btnCloseReviewShifts_Click(object sender, EventArgs e)

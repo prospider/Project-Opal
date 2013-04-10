@@ -113,8 +113,6 @@ namespace Project_Opal
                 VALUES ('{0}', '{1}', datetime('now'))",
                id.ToString(), vehicleNum.ToString());
 
-        
-
             DatabaseConnection.ExecuteUpdate(stm);
 
             stm = String.Format(@"
@@ -151,20 +149,6 @@ namespace Project_Opal
                 LIMIT 50", id.ToString()));
 
             return PreviousShiftTable;
-
-            /*Shift[] shiftArray = new Shift[PreviousShiftTable.Rows.Count];
-            
-            //Need to add exception for when the user has an unfinished shift
-            for (int i = 0; i < PreviousShiftTable.Rows.Count; i++)
-            {
-                    Shift shf = new Shift(Convert.ToInt32(PreviousShiftTable.Rows[i][0]),
-                      Convert.ToInt32(PreviousShiftTable.Rows[i][1]),
-                      Convert.ToInt32(PreviousShiftTable.Rows[i][2]),
-                      Convert.ToDateTime(PreviousShiftTable.Rows[i][3]),
-                      Convert.ToDateTime(PreviousShiftTable.Rows[i][4]));
-                    shiftArray[i] = shf;
-            }
-            return shiftArray;*/
         }
 
         public DataTable LastShift()
@@ -193,13 +177,6 @@ namespace Project_Opal
         
         public DataTable SelectedShifts(DateTime selectedDate)
         {
-            //Need to modify the commented out sql statement so that it only grabs shifts with matching start dates
-            //For now it's just grabbing all of the shifts for the employee_id
-            
-            /*DataTable SelectedShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
-                                                                        FROM T_SHIFT 
-                                                                        WHERE employee_id = {0} AND start_time = {1}", id.ToString(), selectedDate.ToString()));
-            */
              DataTable SelectedShiftTable = DatabaseConnection.ExecuteSelect(String.Format(@"SELECT id, employee_id, vehicle_number, start_time, end_time
                                                                         FROM T_SHIFT 
                                                                         WHERE employee_id = {0}", id.ToString()));

@@ -32,7 +32,6 @@ namespace Project_Opal
           
         }
 
-
         public void Write(string line, int severity = 0)
         {
             try
@@ -57,7 +56,5 @@ namespace Project_Opal
             runFile.WriteLine("\n----------------NEW RUN------------NEW RUN -----------NEW RUN------------NEW RUN----------------NEW RUN------------------NEW RUN--------------------NEW RUN--------------\n");
             runFile.Close();
         }
-
-
     }
 }
