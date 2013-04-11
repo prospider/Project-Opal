@@ -36,12 +36,17 @@ namespace Project_Opal
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
             
-            this.Size = DEFAULT_SIZE;
-            lblLastShift.Visible = false;
-            lblLastShiftInformation.Visible = false;
-            btnCloseReviewShifts.Visible = false;
-            btnMoreShiftInformation.Visible = false;
-            btnReview.Visible = true;
+            if (btnReview.Visible == false)
+            {
+                this.Size = DEFAULT_SIZE;
+                lblLastShift.Visible = false;
+                lblLastShiftInformation.Visible = false;
+                btnCloseReviewShifts.Visible = false;
+                btnMoreShiftInformation.Visible = false;
+                btnReview.Visible = true;
+            }
+            
+            chkVehicleLocked.Checked = true;
 
             if (mainMenuOpen)
             {
@@ -76,6 +81,17 @@ namespace Project_Opal
                 lastShift = null;
                 InitializeFormElements();
                 this.Visible = true;
+                chkVehicleLocked.Checked = true;
+
+                if (btnReview.Visible == false)
+                {
+                    this.Size = DEFAULT_SIZE;
+                    lblLastShift.Visible = false;
+                    lblLastShiftInformation.Visible = false;
+                    btnCloseReviewShifts.Visible = false;
+                    btnMoreShiftInformation.Visible = false;
+                    btnReview.Visible = true;
+                }
                 mainMenuOpen = true;
             }
             else
@@ -98,7 +114,6 @@ namespace Project_Opal
             }
             else
             {
-
                 currentShift = currentUser.ClockIn(1); //TODO: Get input for vehicle number
             }
 
