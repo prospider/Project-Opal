@@ -95,7 +95,7 @@ def static(path):
 
 @bottle.route('/overview')
 def overview_page():
-    pass
+    return "test successful!"
 
 
 
